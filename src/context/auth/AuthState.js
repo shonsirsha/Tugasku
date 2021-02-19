@@ -158,7 +158,7 @@ const AuthState = (props) => {
 				);
 			} catch (err) {
 				console.log(err);
-				console.log("error updating profile...");
+				console.log("error getting all questions");
 			}
 		}
 	};
