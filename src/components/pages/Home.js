@@ -138,12 +138,6 @@ const MenteeView = ({ updateProfile, currentUser, signOut }) => {
 		});
 	}, []);
 
-	// useEffect(() => {
-	// 	alert("wx");
-	// 	console.log(questions);
-	// }, [questions]);
-	// useEffect(() => {}, [currentUser]);
-
 	return (
 		<Row>
 			<Col>
