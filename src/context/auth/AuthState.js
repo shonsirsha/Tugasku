@@ -75,6 +75,7 @@ const AuthState = (props) => {
 					email: user.email,
 					name: "",
 					creds: -1,
+					level: 0,
 				};
 
 				await db.collection("users").doc(user.uid).set(data);

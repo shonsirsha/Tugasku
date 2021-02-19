@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { HeadingMD, HeadingSM } from "../Typography/Headings";
 import { CaptionDefault, CaptionSharp } from "../Typography/Caption";
 import { Link } from "react-router-dom";
@@ -44,7 +44,16 @@ const ResultContainer = styled.div`
 	margin-top: 0;
 `;
 const ProfileTypeContainer = styled.div`
-	margin-bottom: 16px;
+	margin-bottom: 32px;
+	-webkit-box-shadow: -1px 2px 20px -3px rgb(133 208 154 / 51%);
+	-moz-box-shadow: -1px 2px 20px -3px rgb(133 208 154 / 51%);
+	box-shadow: -1px 2px 20px -3px rgb(133 208 154 / 51%);
+	padding: 8px;
+	padding-left: 16px;
+	border-radius: 10px;
+	padding-right: 16px;
+	display: flex;
+	justify-content: space-between;
 `;
 const ProfileCard = styled(Card)`
 	padding: 4px;
@@ -60,14 +69,23 @@ const SelectContainer = styled.div`
 	margin-bottom: 16px;
 `;
 const MenteeSignUpForm = () => {
+	const [mentee, setMentee] = useState({
+		fullName: "",
+		creds: "",
+		level: "SD (Sekolah Dasar) / Sederajat",
+	});
+	const { creds, fullName, level } = mentee;
+	const handleChange = (e) => {
+		setMentee({ ...mentee, [e.target.name]: e.target.value });
+	};
+
 	return (
 		<>
 			<Row>
 				<Col>
 					<ProfileTypeContainer>
-						<StyledHeadingSM>
-							👩‍🎓 &nbsp;👨‍🎓 Siswa / Orang Tua Siswa
-						</StyledHeadingSM>
+						<StyledHeadingSM>Siswa / Orang Tua Siswa</StyledHeadingSM>
+						<StyledHeadingSM>👩‍🎓 &nbsp;👨‍🎓</StyledHeadingSM>
 					</ProfileTypeContainer>
 				</Col>
 			</Row>
@@ -77,19 +95,32 @@ const MenteeSignUpForm = () => {
 						<InputGroup.Prepend>
 							<InputGroup.Text id="basic-addon1">😊</InputGroup.Text>
 						</InputGroup.Prepend>
-						<FormControl placeholder="Nama Siswa (Harus Diisi)" />
+						<FormControl
+							placeholder="Nama Siswa (Harus Diisi)"
+							name="fullName"
+							onChange={handleChange}
+						/>
 					</InputGroup>
 					<InputGroup className="mb-3">
 						<InputGroup.Prepend>
 							<InputGroup.Text id="basic-addon1">🏫</InputGroup.Text>
 						</InputGroup.Prepend>
-						<FormControl placeholder="Nama Sekolah" />
+						<FormControl
+							placeholder="Nama Sekolah"
+							name="creds"
+							onChange={handleChange}
+						/>
 					</InputGroup>
 					<SelectContainer>
-						<Form.Control size="sm" as="select">
-							<option>SD (Sekolah Dasar) / Setingkat</option>
-							<option>SMP (Sekolah Menengah Pertama) / Setingkat</option>
-							<option>SMA (Sekolah Menengah Atas) / Setingkat</option>
+						<Form.Control
+							size="sm"
+							as="select"
+							onChange={handleChange}
+							name="level"
+						>
+							<option>SD (Sekolah Dasar) / Sederajat</option>
+							<option>SMP (Sekolah Menengah Pertama) / Sederajat</option>
+							<option>SMA (Sekolah Menengah Atas) / Sederajat</option>
 						</Form.Control>
 					</SelectContainer>
 				</Col>
@@ -102,17 +133,22 @@ const MenteeSignUpForm = () => {
 						<ProfileCard>
 							<Card.Body>
 								<CaptionSharp>
-									<b>Sean Saoírse Leo Liesanggoro</b>
+									<b>{fullName ? fullName : "Nama Kamu Disini"}</b>
 								</CaptionSharp>
-								<CaptionSharp>Bina Bangsa School Semarang</CaptionSharp>
-
-								<StyledBadge variant="success">SMA / Setingkat</StyledBadge>
+								<CaptionSharp>{creds}</CaptionSharp>
+								{level.length > 0 && (
+									<StyledBadge variant="success">{level}</StyledBadge>
+								)}
 							</Card.Body>
 						</ProfileCard>
-						<CaptionSharp className="mb-2">Profilmu sudah oke?</CaptionSharp>
+						{fullName.length >= 3 && (
+							<CaptionSharp className="mb-2">Profilmu sudah oke?</CaptionSharp>
+						)}
 					</Col>
 				</Row>
-				<Button variant="outline-success">Lanjutkan</Button>
+				{fullName.length >= 3 && (
+					<Button variant="outline-success">Lanjutkan</Button>
+				)}
 			</ResultContainer>
 		</>
 	);
@@ -123,7 +159,8 @@ const MentorSignUpForm = () => {
 			<Row>
 				<Col>
 					<ProfileTypeContainer>
-						<StyledHeadingSM>👩‍🏫 &nbsp;👨‍🏫 Mentor</StyledHeadingSM>
+						<StyledHeadingSM>Mentor</StyledHeadingSM>
+						<StyledHeadingSM>👩‍🏫 &nbsp;👨‍🏫 &nbsp;</StyledHeadingSM>
 					</ProfileTypeContainer>
 				</Col>
 			</Row>
@@ -178,7 +215,7 @@ const MentorSignUpForm = () => {
 		</>
 	);
 };
-const Welcomer = () => {
+const Welcomer = ({ setWantToRender }) => {
 	return (
 		<>
 			<Row>
@@ -188,16 +225,21 @@ const Welcomer = () => {
 			</Row>
 			<Row>
 				<Col>
-					<CaptionDefault>Siapakah Kamu?</CaptionDefault>
+					<CaptionDefault>Kamu yang Mana?</CaptionDefault>
 				</Col>
 			</Row>
 			<StyledRow>
 				<Col>
-					<MenteeCard>
+					<MenteeCard
+						onClick={() => {
+							setWantToRender("mentee");
+						}}
+					>
 						<Card.Body>
 							<Card.Title>Siswa / Orang Tua Siswa </Card.Title>
 							<CardSubtitle className="mb-2">
-								Silakan klik atau ketuk (tap) disini jika ini kamu
+								Silakan klik atau ketuk (tap) disini jika kamu ingin mendaftar
+								sebagai siswa / orang tua siswa
 							</CardSubtitle>
 							<EmojiContainer>👩‍🎓 &nbsp;👨‍🎓</EmojiContainer>
 						</Card.Body>
@@ -206,11 +248,16 @@ const Welcomer = () => {
 			</StyledRow>
 			<StyledRow>
 				<Col>
-					<MentorCard>
+					<MentorCard
+						onClick={() => {
+							setWantToRender("mentor");
+						}}
+					>
 						<Card.Body>
 							<Card.Title>Mentor</Card.Title>
 							<CardSubtitle className="mb-2">
-								Silakan klik atau ketuk (tap) disini jika ini kamu
+								Silakan klik atau ketuk (tap) disini jika kamu ingin mendaftar
+								sebagai mentor
 							</CardSubtitle>
 							<EmojiContainer>👩‍🏫 &nbsp;💚</EmojiContainer>
 						</Card.Body>
@@ -222,9 +269,20 @@ const Welcomer = () => {
 };
 
 const SignUp = () => {
+	const [wantToRender, setWantToRender] = useState(null);
+	const [el, setEl] = useState(<></>);
+	useEffect(() => {
+		if (wantToRender) {
+			if (wantToRender === "mentee") {
+				setEl(<MenteeSignUpForm />);
+			} else {
+				setEl(<MentorSignUpForm />);
+			}
+		}
+	}, [wantToRender]);
 	return (
 		<>
-			<Welcomer />
+			{wantToRender ? el : <Welcomer setWantToRender={setWantToRender} />}
 			{/* <MentorSignUpForm /> */}
 		</>
 	);
