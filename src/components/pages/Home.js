@@ -108,7 +108,7 @@ const MenteeView = () => {
 const Home = () => {
 	return (
 		<>
-			<MenteeView />
+			<LoginView />
 		</>
 	);
 };

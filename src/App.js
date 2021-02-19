@@ -14,14 +14,14 @@ const StyledContainer = styled(Container)`
 `;
 const App = () => {
 	return (
-		<Router>
-			<Switch>
-				<StyledContainer>
+		<StyledContainer>
+			<Router>
+				<Switch>
 					<Route path="/" exact component={Home} />
 					<Route path="/welcome" exact component={Welcome} />
-				</StyledContainer>
-			</Switch>
-		</Router>
+				</Switch>
+			</Router>
+		</StyledContainer>
 	);
 };
 
