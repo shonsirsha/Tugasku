@@ -1,31 +1,28 @@
-import { useState } from "react";
+import React from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Col, Container, Row, Button } from "react-bootstrap";
 import Home from "./components/pages/Home";
-import SignUpVolunteer from "./components/pages/SignUpVolunteer";
-import Navbar from "./components/layout/Navbar";
-
+import Welcome from "./components/pages/Welcome";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import styled from "styled-components";
 
-function App() {
-	const [modalLoginSignupOpen, setModalLoginSignUpOpen] = useState(false);
-
+const StyledContainer = styled(Container)`
+	padding-top: 48px;
+	padding-bottom: 48px;
+	padding-left: 16px;
+	padding-right: 16px;
+`;
+const App = () => {
 	return (
 		<Router>
-			<Navbar
-				setModalLoginSignUpOpen={setModalLoginSignUpOpen}
-				modalLoginSignupOpen={modalLoginSignupOpen}
-			/>
 			<Switch>
-				<Route
-					exact
-					path="/"
-					component={() => (
-						<Home setModalLoginSignUpOpen={setModalLoginSignUpOpen} />
-					)}
-				/>
-				<Route exact path="/sign-up-volunteer" component={SignUpVolunteer} />
+				<StyledContainer>
+					<Route path="/" exact component={Home} />
+					<Route path="/welcome" exact component={Welcome} />
+				</StyledContainer>
 			</Switch>
 		</Router>
 	);
-}
+};
 
 export default App;

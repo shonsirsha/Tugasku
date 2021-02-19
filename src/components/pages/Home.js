@@ -1,58 +1,61 @@
 import React, { useState } from "react";
+import {
+	Col,
+	Container,
+	Row,
+	Button,
+	Form,
+	FormControl,
+} from "react-bootstrap";
+
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { HeadingMD, HeadingXS } from "../Typography/Headings";
 import styled from "styled-components";
-const StyledContainer = styled.div`
+const StyledHeadingMD = styled(HeadingMD)`
+	font-size: 16px;
+`;
+const StyledContainer = styled(Container)`
 	padding: 32px;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	height: 100vh;
+	padding-top: 48px;
+	padding-bottom: 48px;
 `;
-const StyledParagraph = styled.p`
-	margin-bottom: 8px;
-	font-size: 29px;
-	font-weight: 600;
-`;
-const StyledCaption = styled.p`
-	margin-bottom: 8px;
-	font-size: 18px;
-	font-weight: 400;
-	color: #5f5f5f;
-`;
-const CuteCard = styled.div`
-	padding: 32px;
-	margin-top: auto;
-	margin-bottom: auto;
-	align-items: justify;
-	max-width: 100%;
-	border-radius: 10px;
-	-webkit-box-shadow: -8px 2px 18px 0px rgba(205, 205, 252, 1);
-	-moz-box-shadow: -8px 2px 18px 0px rgba(205, 205, 252, 1);
-	box-shadow: -8px 2px 18px 0px rgba(205, 205, 252, 1);
-`;
-const SignUpButton = styled.button`
-	border-radius: 8px;
+const StyledRow = styled(Row)`
 	margin-top: 16px;
+	margin-bottom: 24px;
+`;
+
+const StyledFormControl = styled(FormControl)`
+	border: none;
+	border-bottom: 1.8px solid #00ab6b;
+	border-radius: 0;
+	margin-bottom: 16px;
+	padding: 4px;
 `;
 const Home = ({ setModalLoginSignUpOpen }) => {
 	return (
 		<>
-			<StyledContainer>
-				<CuteCard className="bg-secondary">
-					<StyledParagraph className="text-primary">
-						Selamat datang di Tugasku
-					</StyledParagraph>
-					<StyledCaption>Ingin bertanya?</StyledCaption>
-					<StyledCaption>Ingin membantu?</StyledCaption>
-					<SignUpButton
-						className="btn btn-primary"
-						onClick={() => {
-							setModalLoginSignUpOpen(true);
-						}}
-					>
-						Daftar Sekarang!
-					</SignUpButton>
-				</CuteCard>
-			</StyledContainer>
+			<Row>
+				<Col>
+					<StyledHeadingMD>Daftar / Masuk</StyledHeadingMD>
+				</Col>
+			</Row>
+			<StyledRow>
+				<Col>
+					<HeadingXS>Masukkan Email & Password Kamu</HeadingXS>
+				</Col>
+			</StyledRow>
+			<Row>
+				<Col>
+					<Form>
+						<StyledFormControl type="email" placeholder="E-mail" />
+						<StyledFormControl type="password" placeholder="Password" />
+
+						<Button variant="success" type="submit">
+							Lanjutkan
+						</Button>
+					</Form>
+				</Col>
+			</Row>
 		</>
 	);
 };
