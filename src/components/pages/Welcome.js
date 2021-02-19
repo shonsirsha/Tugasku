@@ -224,8 +224,8 @@ const Welcomer = () => {
 const SignUp = () => {
 	return (
 		<>
-			{/* <Welcomer /> */}
-			<MentorSignUpForm />
+			<Welcomer />
+			{/* <MentorSignUpForm /> */}
 		</>
 	);
 };
