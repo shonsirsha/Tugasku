@@ -129,19 +129,15 @@ const AuthState = (props) => {
 		}
 		stopLoading();
 	};
-	const getQuestions = async (currentUser) => {
+	const getQuestions = (currentUser) => {
 		const { id, userType } = currentUser;
 		if (userType === 10) {
+			// mentee
 			try {
-				const allTugas = await db
-					.collection("tugas")
-					.where("menteeId", "==", id);
+				const allTugas = db.collection("tugas").where("menteeId", "==", id);
 
 				allTugas.onSnapshot(
 					(querySnapshot) => {
-						console.log(
-							`Received query snapshot of size ${querySnapshot.size}`
-						);
 						let qArray = [];
 
 						querySnapshot.forEach((x) => {

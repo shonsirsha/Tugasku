@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import {
 	Col,
-	Container,
 	Row,
 	Button,
 	Form,
@@ -14,7 +13,7 @@ import {
 import { useHistory } from "react-router-dom";
 
 import { HeadingMD, HeadingXS } from "../Typography/Headings";
-import { CaptionDefault, CaptionSharp } from "../Typography/Caption";
+import { CaptionSharp } from "../Typography/Caption";
 
 import styled from "styled-components";
 import AuthContext from "../../context/auth/authContext";
@@ -133,9 +132,8 @@ const MenteeView = ({ updateProfile, currentUser, signOut }) => {
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		getQuestions(currentUser).then(() => {
-			setLoading(false);
-		});
+		getQuestions(currentUser);
+		setLoading(false);
 	}, []);
 
 	return (
