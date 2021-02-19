@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { HeadingMD, HeadingSM } from "../Typography/Headings";
 import { CaptionDefault, CaptionSharp } from "../Typography/Caption";
 import { Link } from "react-router-dom";
+import AuthContext from "../../context/auth/authContext";
+import { useHistory } from "react-router-dom";
 
 import styled from "styled-components";
 import {
@@ -74,11 +76,21 @@ const MenteeSignUpForm = () => {
 		creds: "",
 		level: "SD (Sekolah Dasar) / Sederajat",
 	});
+	const authContext = useContext(AuthContext);
+	const { updateProfile, currentUser } = authContext;
 	const { creds, fullName, level } = mentee;
 	const handleChange = (e) => {
 		setMentee({ ...mentee, [e.target.name]: e.target.value });
 	};
-
+	const handleSubmit = async () => {
+		await updateProfile({
+			id: currentUser.id,
+			name: fullName,
+			creds,
+			level,
+			userType: 10,
+		});
+	};
 	return (
 		<>
 			<Row>
@@ -141,13 +153,15 @@ const MenteeSignUpForm = () => {
 								)}
 							</Card.Body>
 						</ProfileCard>
-						{fullName.length >= 3 && (
+						{fullName.length >= 1 && (
 							<CaptionSharp className="mb-2">Profilmu sudah oke?</CaptionSharp>
 						)}
 					</Col>
 				</Row>
 				{fullName.length >= 3 && (
-					<Button variant="outline-success">Lanjutkan</Button>
+					<Button variant="outline-success" onClick={handleSubmit}>
+						Lanjutkan
+					</Button>
 				)}
 			</ResultContainer>
 		</>
@@ -271,15 +285,24 @@ const Welcomer = ({ setWantToRender }) => {
 const SignUp = () => {
 	const [wantToRender, setWantToRender] = useState(null);
 	const [el, setEl] = useState(<></>);
+	const authContext = useContext(AuthContext);
+	const history = useHistory();
+
+	const { currentUser } = authContext;
+
 	useEffect(() => {
-		if (wantToRender) {
-			if (wantToRender === "mentee") {
-				setEl(<MenteeSignUpForm />);
-			} else {
-				setEl(<MentorSignUpForm />);
+		if (currentUser === null || currentUser.creds !== -1) {
+			history.push("/");
+		} else {
+			if (wantToRender) {
+				if (wantToRender === "mentee") {
+					setEl(<MenteeSignUpForm />);
+				} else {
+					setEl(<MentorSignUpForm />);
+				}
 			}
 		}
-	}, [wantToRender]);
+	}, [currentUser, wantToRender]);
 	return (
 		<>
 			{wantToRender ? el : <Welcomer setWantToRender={setWantToRender} />}

@@ -15,6 +15,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { HeadingMD, HeadingXS } from "../Typography/Headings";
 import styled from "styled-components";
 import AuthContext from "../../context/auth/authContext";
+import { render } from "@testing-library/react";
 
 const StyledHeadingMD = styled(HeadingMD)`
 	font-size: 16px;
@@ -62,7 +63,7 @@ const StyledTabs = styled(Tabs)`
 const LoginView = () => {
 	const authContext = useContext(AuthContext);
 
-	const { handleSignUp } = authContext;
+	const { handleSignUp, authLoading } = authContext;
 
 	const [logOnDetail, setLogOnDetail] = useState({
 		email: "",
@@ -106,7 +107,7 @@ const LoginView = () => {
 								handleSignUp(logOnDetail);
 							}}
 						>
-							Lanjutkan
+							{authLoading ? "Loading.." : "Lanjutkan"}
 						</Button>
 					</Form>
 				</Col>
@@ -141,19 +142,38 @@ const Home = () => {
 	// const { creds, name, id } = currentUser;
 	const [rendered, setRendered] = useState(<></>);
 	const history = useHistory();
+
+	// useEffect(() => {
+	// 	if (authLoading) {
+	// 		setRendered(<p>Loading...</p>);
+	// 	} else {
+	// 		if (!currentUser) {
+	// 			setRendered(<LoginView />);
+	// 		}
+	// 	}
+	// }, [authLoading]);
+
 	useEffect(() => {
-		if (currentUser) {
-			if (currentUser.creds === -1) {
-				history.push("/welcome");
-			}
+		if (authLoading) {
+			setRendered(<p>Loading...</p>);
 		} else {
-			setRendered(<LoginView />);
+			if (!currentUser) {
+				setRendered(<LoginView />);
+			} else {
+				if (currentUser.creds === -1) {
+					history.push("/welcome");
+				} else {
+					if (currentUser.userType === 10) {
+						setRendered(<MenteeView />);
+					} else {
+						// setRendered(<Mentor />);
+					}
+				}
+			}
 		}
+	}, [authLoading, currentUser]);
 
-		console.log(currentUser);
-	}, [currentUser]);
-
-	return <>{authLoading && <p>Loading...</p>}</>;
+	return <>{rendered}</>;
 };
 
 export default Home;

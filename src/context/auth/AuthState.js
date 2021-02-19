@@ -19,7 +19,7 @@ import {
 const AuthState = (props) => {
 	const initialState = {
 		currentUser: null,
-		authLoading: false,
+		authLoading: true,
 	};
 
 	const [state, dispatch] = useReducer(AuthReducer, initialState);
@@ -27,16 +27,17 @@ const AuthState = (props) => {
 	useEffect(() => {
 		auth.onAuthStateChanged(async (user) => {
 			if (user === null) {
+				stopLoading();
 				//if user isn't authed
 			} else {
-				await handleSignupToDb(user);
+				handleSignupToDb(user);
 			}
 		});
 		//eslint-disable-next-line
 	}, []);
 
 	const handleSignUp = async (logOnDetail) => {
-		// setAuthLoading();
+		startLoading();
 		const { email, password } = logOnDetail;
 		try {
 			await auth.createUserWithEmailAndPassword(email, password);
@@ -66,7 +67,6 @@ const AuthState = (props) => {
 
 	const handleSignupToDb = async (user) => {
 		try {
-			startLoading();
 			const userRef = db.collection("users").doc(user.uid);
 			const doc = await userRef.get();
 			if (!doc.exists) {
@@ -76,10 +76,14 @@ const AuthState = (props) => {
 					name: "",
 					creds: -1,
 					level: 0,
+					userType: -1,
 				};
 
 				await db.collection("users").doc(user.uid).set(data);
-				stopLoading();
+				dispatch({
+					type: USER_AUTH,
+					payload: { currentUser: data },
+				});
 			} else {
 				dispatch({
 					type: USER_AUTH,
@@ -89,6 +93,27 @@ const AuthState = (props) => {
 		} catch (err) {
 			console.log("WW");
 		}
+		stopLoading();
+	};
+	const updateProfile = async (userObject) => {
+		startLoading();
+		const { creds, level, id, name, userType } = userObject;
+		try {
+			await db.collection("users").doc(id).update({
+				creds,
+				level,
+				name,
+				userType,
+			});
+			dispatch({
+				type: USER_AUTH,
+				payload: { currentUser: userObject },
+			});
+		} catch (err) {
+			console.log(err);
+			console.log("WW");
+		}
+		stopLoading();
 	};
 	const startLoading = () => {
 		dispatch({
@@ -107,6 +132,7 @@ const AuthState = (props) => {
 				authLoading: state.authLoading,
 				handleSignUp,
 				handleSignupToDb,
+				updateProfile,
 			}}
 		>
 			{props.children}
