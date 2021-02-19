@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import Modal from "./Modal";
+
 const StyledNav = styled.div`
 	padding: 16px 24px;
 `;
 const Navbar = () => {
+	const [modalLoginSignupOpen, setModalLoginSignUpOpen] = useState(false);
 	return (
 		<StyledNav className="bg-secondary">
 			<header className="navbar">
@@ -15,11 +18,21 @@ const Navbar = () => {
 					</a>
 				</section>
 				<section className="navbar-section">
-					<a href="#" className="btn btn-link">
+					<a
+						onClick={() => {
+							setModalLoginSignUpOpen(true);
+						}}
+						className="btn btn-link"
+					>
 						Daftar / Masuk
 					</a>
 				</section>
 			</header>
+			<Modal
+				modalTitle={"Daftar / Masuk"}
+				opened={modalLoginSignupOpen}
+				setOpen={setModalLoginSignUpOpen}
+			/>
 		</StyledNav>
 	);
 };
