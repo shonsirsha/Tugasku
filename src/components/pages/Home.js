@@ -130,9 +130,12 @@ const MenteeView = ({ updateProfile, currentUser, signOut }) => {
 
 	const authContext = useContext(AuthContext);
 	const { getQuestions, questions } = authContext;
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		getQuestions(currentUser);
+		getQuestions(currentUser).then(() => {
+			setLoading(false);
+		});
 	}, []);
 
 	// useEffect(() => {
@@ -146,9 +149,11 @@ const MenteeView = ({ updateProfile, currentUser, signOut }) => {
 			<Col>
 				<StyledTabs activeKey={key} onSelect={(k) => setKey(k)}>
 					<Tab eventKey="semua_tugas" title="Semua Tugas">
-						{questions.map((q) => (
-							<div>{q.question}</div>
-						))}
+						{loading ? (
+							<p>Mengambil semua tugas...</p>
+						) : (
+							questions.map((q) => <div>{q.question}</div>)
+						)}
 					</Tab>
 					<Tab eventKey="tugas_dijawab" title="Tugas Dijawab"></Tab>
 					<Tab eventKey="profile" title="Profil">

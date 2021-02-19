@@ -93,7 +93,7 @@ const AuthState = (props) => {
 					userType: -1,
 				};
 
-				await db.collection("users").doc(user.uid).set(data);
+				await userRef.set(data);
 				dispatch({
 					type: USER_AUTH,
 					payload: { currentUser: data },
@@ -133,21 +133,29 @@ const AuthState = (props) => {
 		const { id, userType } = currentUser;
 		if (userType === 10) {
 			try {
-				const citiesRef = db.collection("tugas");
+				const allTugas = await db
+					.collection("tugas")
+					.where("menteeId", "==", id);
 
-				// Create a query against the collection
-				const allCapitalsRes = await citiesRef
-					.where("menteeId", "==", id)
-					.get();
+				allTugas.onSnapshot(
+					(querySnapshot) => {
+						console.log(
+							`Received query snapshot of size ${querySnapshot.size}`
+						);
+						let qArray = [];
 
-				let qArray = [];
-				allCapitalsRes.forEach((doc) => {
-					qArray.push(doc.data());
-				});
-				dispatch({
-					type: GET_ALL_QUESTIONS,
-					payload: { questions: qArray },
-				});
+						querySnapshot.forEach((x) => {
+							qArray.push(x.data());
+						});
+						dispatch({
+							type: GET_ALL_QUESTIONS,
+							payload: { questions: qArray },
+						});
+					},
+					(err) => {
+						console.log(`Encountered error: ${err}`);
+					}
+				);
 			} catch (err) {
 				console.log(err);
 				console.log("error updating profile...");
