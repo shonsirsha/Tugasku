@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Modal from "./Modal";
-
+import { Link } from "react-router-dom";
 const StyledNav = styled.div`
 	padding: 16px 24px;
 `;
@@ -37,9 +37,9 @@ const Navbar = ({ modalLoginSignupOpen, setModalLoginSignUpOpen }) => {
 				<section className="navbar-section">
 					<img src="https://picturepan2.github.io/spectre/img/spectre-logo.svg" />
 
-					<a href="#" className="btn btn-link">
+					<Link to="/" className="btn btn-link">
 						Tugasku
-					</a>
+					</Link>
 				</section>
 				<section className="navbar-section">
 					<a

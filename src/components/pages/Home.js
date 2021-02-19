@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Navbar from "../layout/Navbar";
 import styled from "styled-components";
 const StyledContainer = styled.div`
 	padding: 32px;
@@ -34,15 +33,9 @@ const SignUpButton = styled.button`
 	border-radius: 8px;
 	margin-top: 16px;
 `;
-const Home = () => {
-	const [modalLoginSignupOpen, setModalLoginSignUpOpen] = useState(false);
-
+const Home = ({ setModalLoginSignUpOpen }) => {
 	return (
 		<>
-			<Navbar
-				setModalLoginSignUpOpen={setModalLoginSignUpOpen}
-				modalLoginSignupOpen={modalLoginSignupOpen}
-			/>
 			<StyledContainer>
 				<CuteCard className="bg-secondary">
 					<StyledParagraph className="text-primary">
