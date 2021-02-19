@@ -11,6 +11,7 @@ import {
 	USER_DOESNT_EXIST,
 	RESET_EMAIL_EXISTS,
 	RESET_ALERT,
+	GET_ALL_QUESTIONS,
 	SIGNED_OUT,
 } from "./types";
 
@@ -26,11 +27,17 @@ export default (state, action) => {
 				...state,
 				currentUser: null,
 			};
+		case GET_ALL_QUESTIONS:
+			return {
+				...state,
+				questions: action.payload.questions,
+			};
 		case SET_LOADING:
 			return {
 				...state,
 				authLoading: true,
 			};
+
 		case STOP_LOADING:
 			return {
 				...state,

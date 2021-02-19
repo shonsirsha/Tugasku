@@ -20,3 +20,5 @@ export const SIGNED_OUT = "SIGNED_OUT";
 
 export const RESET_EMAIL_EXISTS = "RESET_EMAIL_EXISTS";
 export const RESET_ALERT = "RESET_ALERT";
+
+export const GET_ALL_QUESTIONS = "GET_ALL_QUESTIONS";

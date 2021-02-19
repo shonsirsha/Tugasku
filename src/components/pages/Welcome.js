@@ -200,12 +200,15 @@ const MentorSignUpForm = () => {
 					<Form.Text className="text-muted mb-3">
 						Contoh: Mahasiswa di Universitas X
 					</Form.Text>
-					<Form.Group controlId="formBasicCheckbox">
+					<StyledHeadingSM>Mata Pelajaran:</StyledHeadingSM>
+
+					<Form.Group className="mt-2" controlId="formBasicCheckbox">
 						<Form.Check type="checkbox" label="Matematika" />
 						<Form.Check type="checkbox" label="IPA" />
 						<Form.Check type="checkbox" label="IPS" />
 						<Form.Check type="checkbox" label="PPKN" />
-						<Form.Check type="checkbox" label="Bahasa Inggris" />
+						<Form.Check type="checkbox" label="Bahasa Indonesia" />
+						<Form.Check type="checkbox" label="Bahasa Inggris / Bahasa Asing" />
 						<Form.Check type="checkbox" label="Seni Budaya" />
 						<Form.Check type="checkbox" label="TIK" />
 					</Form.Group>
@@ -223,7 +226,7 @@ const MentorSignUpForm = () => {
 								</CaptionSharp>
 								<CaptionSharp>Software Engineer at Snapchat</CaptionSharp>
 
-								<StyledBadge variant="success">SMA / Setingkat</StyledBadge>
+								<StyledBadge variant="primary">MENTOR 🎖️</StyledBadge>
 							</Card.Body>
 						</ProfileCard>
 						<CaptionSharp className="mb-2">Profilmu sudah oke?</CaptionSharp>

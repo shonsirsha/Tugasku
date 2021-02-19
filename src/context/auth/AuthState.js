@@ -15,12 +15,14 @@ import {
 	USER_DOESNT_EXIST,
 	RESET_EMAIL_EXISTS,
 	RESET_ALERT,
+	GET_ALL_QUESTIONS,
 	SIGNED_OUT,
 } from "./types";
 const AuthState = (props) => {
 	const initialState = {
 		currentUser: null,
 		authLoading: true,
+		questions: [],
 	};
 
 	const [state, dispatch] = useReducer(AuthReducer, initialState);
@@ -127,6 +129,31 @@ const AuthState = (props) => {
 		}
 		stopLoading();
 	};
+	const getQuestions = async (currentUser) => {
+		const { id, userType } = currentUser;
+		if (userType === 10) {
+			try {
+				const citiesRef = db.collection("tugas");
+
+				// Create a query against the collection
+				const allCapitalsRes = await citiesRef
+					.where("menteeId", "==", id)
+					.get();
+
+				let qArray = [];
+				allCapitalsRes.forEach((doc) => {
+					qArray.push(doc.data());
+				});
+				dispatch({
+					type: GET_ALL_QUESTIONS,
+					payload: { questions: qArray },
+				});
+			} catch (err) {
+				console.log(err);
+				console.log("error updating profile...");
+			}
+		}
+	};
 	const signOut = async () => {
 		startLoading();
 		try {
@@ -155,11 +182,13 @@ const AuthState = (props) => {
 			value={{
 				currentUser: state.currentUser,
 				authLoading: state.authLoading,
+				questions: state.questions,
 				handleSignUp,
 				handleSignIn,
 				handleSignupToDb,
 				updateProfile,
 				signOut,
+				getQuestions,
 			}}
 		>
 			{props.children}

@@ -126,17 +126,31 @@ const MenteeView = ({ updateProfile, currentUser, signOut }) => {
 	const [key, setKey] = useState("semua_tugas");
 
 	const { name, level, creds } = currentUser;
+	const [localQ, setLocalQ] = useState([]);
+
+	const authContext = useContext(AuthContext);
+	const { getQuestions, questions } = authContext;
+
+	useEffect(() => {
+		getQuestions(currentUser);
+	}, []);
+
+	// useEffect(() => {
+	// 	alert("wx");
+	// 	console.log(questions);
+	// }, [questions]);
+	// useEffect(() => {}, [currentUser]);
 
 	return (
 		<Row>
 			<Col>
 				<StyledTabs activeKey={key} onSelect={(k) => setKey(k)}>
 					<Tab eventKey="semua_tugas" title="Semua Tugas">
-						aasdsadsdasd{" "}
+						{questions.map((q) => (
+							<div>{q.question}</div>
+						))}
 					</Tab>
-					<Tab eventKey="tugas_dijawab" title="Tugas Dijawab">
-						asdasd{" "}
-					</Tab>
+					<Tab eventKey="tugas_dijawab" title="Tugas Dijawab"></Tab>
 					<Tab eventKey="profile" title="Profil">
 						<ProfileCard>
 							<Card.Body>
