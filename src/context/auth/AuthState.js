@@ -25,8 +25,9 @@ const AuthState = (props) => {
 		//eslint-disable-next-line
 	}, []);
 
-	const handleSignUp = async (email, password) => {
+	const handleSignUp = async (logOnDetail) => {
 		// setAuthLoading();
+		const { email, password } = logOnDetail;
 		try {
 			await app.auth().createUserWithEmailAndPassword(email, password);
 			console.log("kasil");

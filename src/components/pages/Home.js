@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
 	Col,
 	Container,
@@ -13,6 +13,8 @@ import {
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { HeadingMD, HeadingXS } from "../Typography/Headings";
 import styled from "styled-components";
+import AuthContext from "../../context/auth/authContext";
+
 const StyledHeadingMD = styled(HeadingMD)`
 	font-size: 16px;
 `;
@@ -57,6 +59,18 @@ const StyledTabs = styled(Tabs)`
 	margin-bottom: 24px;
 `;
 const LoginView = () => {
+	const authContext = useContext(AuthContext);
+
+	const { handleSignUp } = authContext;
+
+	const [logOnDetail, setLogOnDetail] = useState({
+		email: "",
+		password: "",
+	});
+	const { email, password } = logOnDetail;
+	const handleChange = (e) => {
+		setLogOnDetail({ ...logOnDetail, [e.target.name]: e.target.value });
+	};
 	return (
 		<>
 			<Row>
@@ -72,10 +86,25 @@ const LoginView = () => {
 			<Row>
 				<Col>
 					<Form>
-						<StyledFormControl type="email" placeholder="E-mail" />
-						<StyledFormControl type="password" placeholder="Password" />
+						<StyledFormControl
+							type="email"
+							placeholder="E-mail"
+							name="email"
+							onChange={handleChange}
+						/>
+						<StyledFormControl
+							type="password"
+							placeholder="Password"
+							name="password"
+							onChange={handleChange}
+						/>
 
-						<Button variant="success" type="submit">
+						<Button
+							variant="success"
+							onClick={() => {
+								handleSignUp(logOnDetail);
+							}}
+						>
 							Lanjutkan
 						</Button>
 					</Form>
