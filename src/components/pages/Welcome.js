@@ -15,7 +15,7 @@ import {
 	InputGroup,
 } from "react-bootstrap";
 const StyledHeadingSM = styled(HeadingSM)`
-	font-size: 21px;
+	font-size: 18px;
 	font-weight: 600;
 `;
 const StyledRow = styled(Row)`
@@ -41,7 +41,7 @@ const EmojiContainer = styled.div`
 	margin-top: 16px;
 `;
 const ResultContainer = styled.div`
-	margin-top: 32px;
+	margin-top: 0;
 `;
 const ProfileTypeContainer = styled.div`
 	margin-bottom: 16px;
@@ -55,6 +55,9 @@ const ProfileCard = styled(Card)`
 `;
 const StyledBadge = styled(Badge)`
 	margin-top: 16px;
+`;
+const SelectContainer = styled.div`
+	margin-bottom: 16px;
 `;
 const MenteeSignUpForm = () => {
 	return (
@@ -82,11 +85,13 @@ const MenteeSignUpForm = () => {
 						</InputGroup.Prepend>
 						<FormControl placeholder="Nama Sekolah" />
 					</InputGroup>
-					<Form.Control size="sm" as="select">
-						<option>SD (Sekolah Dasar) / Setingkat</option>
-						<option>SMP (Sekolah Menengah Pertama) / Setingkat</option>
-						<option>SMA (Sekolah Menengah Atas) / Setingkat</option>
-					</Form.Control>
+					<SelectContainer>
+						<Form.Control size="sm" as="select">
+							<option>SD (Sekolah Dasar) / Setingkat</option>
+							<option>SMP (Sekolah Menengah Pertama) / Setingkat</option>
+							<option>SMA (Sekolah Menengah Atas) / Setingkat</option>
+						</Form.Control>
+					</SelectContainer>
 				</Col>
 			</Row>
 			<ResultContainer>
@@ -100,6 +105,67 @@ const MenteeSignUpForm = () => {
 									<b>Sean Saoírse Leo Liesanggoro</b>
 								</CaptionSharp>
 								<CaptionSharp>Bina Bangsa School Semarang</CaptionSharp>
+
+								<StyledBadge variant="success">SMA / Setingkat</StyledBadge>
+							</Card.Body>
+						</ProfileCard>
+						<CaptionSharp className="mb-2">Profilmu sudah oke?</CaptionSharp>
+					</Col>
+				</Row>
+				<Button variant="outline-success">Lanjutkan</Button>
+			</ResultContainer>
+		</>
+	);
+};
+const MentorSignUpForm = () => {
+	return (
+		<>
+			<Row>
+				<Col>
+					<ProfileTypeContainer>
+						<StyledHeadingSM>👩‍🏫 &nbsp;👨‍🏫 Mentor</StyledHeadingSM>
+					</ProfileTypeContainer>
+				</Col>
+			</Row>
+			<Row>
+				<Col>
+					<InputGroup className="mb-3">
+						<InputGroup.Prepend>
+							<InputGroup.Text id="basic-addon1">😊</InputGroup.Text>
+						</InputGroup.Prepend>
+						<FormControl placeholder="Nama Lengkap (Harus Diisi)" />
+					</InputGroup>
+					<InputGroup className="mb-1">
+						<InputGroup.Prepend>
+							<InputGroup.Text id="basic-addon1">❓</InputGroup.Text>
+						</InputGroup.Prepend>
+						<FormControl placeholder="Kredensial Anda" />
+					</InputGroup>
+					<Form.Text className="text-muted mb-3">
+						Contoh: Mahasiswa di Universitas X
+					</Form.Text>
+					<Form.Group controlId="formBasicCheckbox">
+						<Form.Check type="checkbox" label="Matematika" />
+						<Form.Check type="checkbox" label="IPA" />
+						<Form.Check type="checkbox" label="IPS" />
+						<Form.Check type="checkbox" label="PPKN" />
+						<Form.Check type="checkbox" label="Bahasa Inggris" />
+						<Form.Check type="checkbox" label="Seni Budaya" />
+						<Form.Check type="checkbox" label="TIK" />
+					</Form.Group>
+				</Col>
+			</Row>
+			<ResultContainer>
+				<Row>
+					<Col>
+						<CaptionSharp className="mb-2">Pratinjau Profil</CaptionSharp>
+
+						<ProfileCard>
+							<Card.Body>
+								<CaptionSharp>
+									<b>Sean Saoírse Leo Liesanggoro</b>
+								</CaptionSharp>
+								<CaptionSharp>Software Engineer at Snapchat</CaptionSharp>
 
 								<StyledBadge variant="success">SMA / Setingkat</StyledBadge>
 							</Card.Body>
@@ -154,11 +220,12 @@ const Welcomer = () => {
 		</>
 	);
 };
+
 const SignUp = () => {
 	return (
 		<>
 			{/* <Welcomer /> */}
-			<MenteeSignUpForm />
+			<MentorSignUpForm />
 		</>
 	);
 };

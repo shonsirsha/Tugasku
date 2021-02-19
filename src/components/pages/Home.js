@@ -31,7 +31,7 @@ const StyledFormControl = styled(FormControl)`
 	margin-bottom: 16px;
 	padding: 4px;
 `;
-const Home = ({ setModalLoginSignUpOpen }) => {
+const LoginView = () => {
 	return (
 		<>
 			<Row>
@@ -56,6 +56,13 @@ const Home = ({ setModalLoginSignUpOpen }) => {
 					</Form>
 				</Col>
 			</Row>
+		</>
+	);
+};
+const Home = () => {
+	return (
+		<>
+			<LoginView />
 		</>
 	);
 };
