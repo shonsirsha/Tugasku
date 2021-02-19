@@ -17,9 +17,7 @@ const AuthState = (props) => {
 		auth.onAuthStateChanged((user) => {
 			if (user === null) {
 				//if user isn't authed
-				alert("Wtf");
 			} else {
-				alert("Signed up!");
 			}
 		});
 		//eslint-disable-next-line
@@ -32,7 +30,25 @@ const AuthState = (props) => {
 			await app.auth().createUserWithEmailAndPassword(email, password);
 			console.log("kasil");
 		} catch (error) {
-			console.log(error);
+			switch (error.code) {
+				case "auth/email-already-in-use":
+					console.log(`Email address ${this.state.email} already in use.`);
+					break;
+				case "auth/invalid-email":
+					console.log(`Email address ${this.state.email} is invalid.`);
+					break;
+				case "auth/operation-not-allowed":
+					console.log(`Error during sign up.`);
+					break;
+				case "auth/weak-password":
+					console.log(
+						"Password is not strong enough. Add additional characters including special characters and numbers."
+					);
+					break;
+				default:
+					console.log(error.message);
+					break;
+			}
 		}
 	};
 
