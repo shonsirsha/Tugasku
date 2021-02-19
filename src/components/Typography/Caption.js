@@ -9,3 +9,11 @@ export const CaptionDefault = styled.p`
 	font-weight: 500;
 	margin: 0px;
 `;
+
+export const CaptionSharp = styled.p`
+	font-size: 15px;
+	font-weight: 300;
+	letter-spacing: -0.4px;
+	color: black;
+	margin: 0px;
+`;
