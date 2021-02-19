@@ -18,7 +18,7 @@ const Modal = ({ modalTitle, opened, setOpen, content }) => {
 				<div class="modal-body">
 					<div class="content">{content}</div>
 				</div>
-				<div class="modal-footer">...</div>
+				<div class="modal-footer">💜 </div>
 			</div>
 		</div>
 	);
