@@ -16,5 +16,7 @@ export const SIGN_IN_FAIL = "SIGN_IN_FAIL";
 export const USER_EXISTS = "USER_EXISTS";
 export const USER_DOESNT_EXIST = "USER_DOESNT_EXIST";
 
+export const SIGNED_OUT = "SIGNED_OUT";
+
 export const RESET_EMAIL_EXISTS = "RESET_EMAIL_EXISTS";
 export const RESET_ALERT = "RESET_ALERT";

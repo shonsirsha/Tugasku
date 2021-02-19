@@ -15,6 +15,7 @@ import {
 	USER_DOESNT_EXIST,
 	RESET_EMAIL_EXISTS,
 	RESET_ALERT,
+	SIGNED_OUT,
 } from "./types";
 const AuthState = (props) => {
 	const initialState = {
@@ -45,7 +46,7 @@ const AuthState = (props) => {
 		} catch (error) {
 			switch (error.code) {
 				case "auth/email-already-in-use":
-					console.log(`Email address already in use.`);
+					await handleSignIn(logOnDetail);
 					break;
 				case "auth/invalid-email":
 					console.log(`Email address is invalid.`);
@@ -62,6 +63,17 @@ const AuthState = (props) => {
 					console.log(error.message);
 					break;
 			}
+		}
+	};
+
+	const handleSignIn = async (logOnDetail) => {
+		const { email, password } = logOnDetail;
+		try {
+			await auth.signInWithEmailAndPassword(email, password);
+			console.log("login to existing user");
+		} catch (error) {
+			console.log("error logging in to an existing user..");
+			console.log(error);
 		}
 	};
 
@@ -111,7 +123,20 @@ const AuthState = (props) => {
 			});
 		} catch (err) {
 			console.log(err);
-			console.log("WW");
+			console.log("error updating profile...");
+		}
+		stopLoading();
+	};
+	const signOut = async () => {
+		startLoading();
+		try {
+			await auth.signOut();
+
+			dispatch({
+				type: SIGNED_OUT,
+			});
+		} catch (err) {
+			console.log("auth logout error");
 		}
 		stopLoading();
 	};
@@ -131,8 +156,10 @@ const AuthState = (props) => {
 				currentUser: state.currentUser,
 				authLoading: state.authLoading,
 				handleSignUp,
+				handleSignIn,
 				handleSignupToDb,
 				updateProfile,
+				signOut,
 			}}
 		>
 			{props.children}

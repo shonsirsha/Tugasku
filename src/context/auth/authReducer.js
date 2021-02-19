@@ -11,6 +11,7 @@ import {
 	USER_DOESNT_EXIST,
 	RESET_EMAIL_EXISTS,
 	RESET_ALERT,
+	SIGNED_OUT,
 } from "./types";
 
 export default (state, action) => {
@@ -19,6 +20,11 @@ export default (state, action) => {
 			return {
 				...state,
 				currentUser: action.payload.currentUser,
+			};
+		case SIGNED_OUT:
+			return {
+				...state,
+				currentUser: null,
 			};
 		case SET_LOADING:
 			return {

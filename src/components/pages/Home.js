@@ -7,23 +7,23 @@ import {
 	Form,
 	FormControl,
 	Tab,
+	Card,
+	Badge,
 	Tabs,
 } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { HeadingMD, HeadingXS } from "../Typography/Headings";
+import { CaptionDefault, CaptionSharp } from "../Typography/Caption";
+
 import styled from "styled-components";
 import AuthContext from "../../context/auth/authContext";
-import { render } from "@testing-library/react";
 
 const StyledHeadingMD = styled(HeadingMD)`
 	font-size: 16px;
 `;
-const StyledContainer = styled(Container)`
-	padding: 32px;
-	padding-top: 48px;
-	padding-bottom: 48px;
+const StyledBadge = styled(Badge)`
+	margin-top: 16px;
 `;
 const StyledRow = styled(Row)`
 	margin-top: 0px;
@@ -35,6 +35,13 @@ const StyledFormControl = styled(FormControl)`
 	border-radius: 0;
 	margin-bottom: 16px;
 	padding: 4px;
+`;
+const ProfileCard = styled(Card)`
+	padding: 4px;
+	margin-bottom: 16px;
+	.card-body {
+		padding: 8px;
+	}
 `;
 const StyledTabs = styled(Tabs)`
 	.nav-item {
@@ -115,8 +122,10 @@ const LoginView = () => {
 		</>
 	);
 };
-const MenteeView = () => {
+const MenteeView = ({ updateProfile, currentUser, signOut }) => {
 	const [key, setKey] = useState("semua_tugas");
+
+	const { name, level, creds } = currentUser;
 
 	return (
 		<Row>
@@ -129,7 +138,18 @@ const MenteeView = () => {
 						asdasd{" "}
 					</Tab>
 					<Tab eventKey="profile" title="Profil">
-						asdasd{" "}
+						<ProfileCard>
+							<Card.Body>
+								<CaptionSharp>
+									<b>{name ? name : "Nama Kamu Disini"}</b>
+								</CaptionSharp>
+								<CaptionSharp>{creds}</CaptionSharp>
+								<StyledBadge variant="success">{level}</StyledBadge>
+							</Card.Body>
+						</ProfileCard>
+						<Button variant="outline-success" onClick={signOut}>
+							Keluar
+						</Button>
 					</Tab>
 				</StyledTabs>
 			</Col>
@@ -138,7 +158,7 @@ const MenteeView = () => {
 };
 const Home = () => {
 	const authContext = useContext(AuthContext);
-	const { currentUser, authLoading } = authContext;
+	const { currentUser, authLoading, updateProfile, signOut } = authContext;
 	// const { creds, name, id } = currentUser;
 	const [rendered, setRendered] = useState(<></>);
 	const history = useHistory();
@@ -164,7 +184,13 @@ const Home = () => {
 					history.push("/welcome");
 				} else {
 					if (currentUser.userType === 10) {
-						setRendered(<MenteeView />);
+						setRendered(
+							<MenteeView
+								updateProfile={updateProfile}
+								currentUser={currentUser}
+								signOut={signOut}
+							/>
+						);
 					} else {
 						// setRendered(<Mentor />);
 					}
