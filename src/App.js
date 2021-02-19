@@ -5,6 +5,7 @@ import Home from "./components/pages/Home";
 import Welcome from "./components/pages/Welcome";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
+import AuthState from "./context/auth/AuthState";
 
 const StyledContainer = styled(Container)`
 	padding-top: 48px;
@@ -14,14 +15,16 @@ const StyledContainer = styled(Container)`
 `;
 const App = () => {
 	return (
-		<StyledContainer>
-			<Router>
-				<Switch>
-					<Route path="/" exact component={Home} />
-					<Route path="/welcome" exact component={Welcome} />
-				</Switch>
-			</Router>
-		</StyledContainer>
+		<AuthState>
+			<StyledContainer>
+				<Router>
+					<Switch>
+						<Route path="/" exact component={Home} />
+						<Route path="/welcome" exact component={Welcome} />
+					</Switch>
+				</Router>
+			</StyledContainer>{" "}
+		</AuthState>
 	);
 };
 
