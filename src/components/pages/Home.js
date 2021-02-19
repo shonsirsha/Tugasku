@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
 	Col,
 	Container,
@@ -9,6 +9,7 @@ import {
 	Tab,
 	Tabs,
 } from "react-bootstrap";
+import { useHistory } from "react-router-dom";
 
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { HeadingMD, HeadingXS } from "../Typography/Headings";
@@ -67,7 +68,7 @@ const LoginView = () => {
 		email: "",
 		password: "",
 	});
-	const { email, password } = logOnDetail;
+	// const { email, password } = logOnDetail;
 	const handleChange = (e) => {
 		setLogOnDetail({ ...logOnDetail, [e.target.name]: e.target.value });
 	};
@@ -135,11 +136,24 @@ const MenteeView = () => {
 	);
 };
 const Home = () => {
-	return (
-		<>
-			<LoginView />
-		</>
-	);
+	const authContext = useContext(AuthContext);
+	const { currentUser, authLoading } = authContext;
+	// const { creds, name, id } = currentUser;
+	const [rendered, setRendered] = useState(<></>);
+	const history = useHistory();
+	useEffect(() => {
+		if (currentUser) {
+			if (currentUser.creds === -1) {
+				history.push("/welcome");
+			}
+		} else {
+			setRendered(<LoginView />);
+		}
+
+		console.log(currentUser);
+	}, [currentUser]);
+
+	return <>{authLoading && <p>Loading...</p>}</>;
 };
 
 export default Home;

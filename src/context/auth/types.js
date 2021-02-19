@@ -1,4 +1,6 @@
 export const SET_LOADING = "SET_LOADING";
+export const STOP_LOADING = "STOP_LOADING";
+
 export const SET_AUTH_LOADING = "SET_AUTH_LOADING";
 
 export const CHECK_AUTH = "CHECK_AUTH";
