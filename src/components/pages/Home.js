@@ -94,7 +94,12 @@ const LoginView = () => {
 			</StyledRow>
 			<Row>
 				<Col>
-					<Form>
+					<Form
+						onSubmit={(e) => {
+							e.preventDefault();
+							handleSignUp(logOnDetail);
+						}}
+					>
 						<StyledFormControl
 							type="email"
 							placeholder="E-mail"
@@ -108,12 +113,7 @@ const LoginView = () => {
 							onChange={handleChange}
 						/>
 
-						<Button
-							variant="success"
-							onClick={() => {
-								handleSignUp(logOnDetail);
-							}}
-						>
+						<Button variant="success" type="submit">
 							{authLoading ? "Loading.." : "Lanjutkan"}
 						</Button>
 					</Form>
@@ -147,7 +147,7 @@ const MenteeView = ({ updateProfile, currentUser, signOut }) => {
 								<StyledBadge variant="success">{level}</StyledBadge>
 							</Card.Body>
 						</ProfileCard>
-						<Button variant="outline-success" onClick={signOut}>
+						<Button variant="outline-danger mt-auto" onClick={signOut}>
 							Keluar
 						</Button>
 					</Tab>

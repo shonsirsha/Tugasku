@@ -82,7 +82,8 @@ const MenteeSignUpForm = () => {
 	const handleChange = (e) => {
 		setMentee({ ...mentee, [e.target.name]: e.target.value });
 	};
-	const handleSubmit = async () => {
+	const handleSubmit = async (e) => {
+		e.preventDefault();
 		await updateProfile({
 			id: currentUser.id,
 			name: fullName,
@@ -101,69 +102,73 @@ const MenteeSignUpForm = () => {
 					</ProfileTypeContainer>
 				</Col>
 			</Row>
-			<Row>
-				<Col>
-					<InputGroup className="mb-3">
-						<InputGroup.Prepend>
-							<InputGroup.Text id="basic-addon1">😊</InputGroup.Text>
-						</InputGroup.Prepend>
-						<FormControl
-							placeholder="Nama Siswa (Harus Diisi)"
-							name="fullName"
-							onChange={handleChange}
-						/>
-					</InputGroup>
-					<InputGroup className="mb-3">
-						<InputGroup.Prepend>
-							<InputGroup.Text id="basic-addon1">🏫</InputGroup.Text>
-						</InputGroup.Prepend>
-						<FormControl
-							placeholder="Nama Sekolah"
-							name="creds"
-							onChange={handleChange}
-						/>
-					</InputGroup>
-					<SelectContainer>
-						<Form.Control
-							size="sm"
-							as="select"
-							onChange={handleChange}
-							name="level"
-						>
-							<option>SD (Sekolah Dasar) / Sederajat</option>
-							<option>SMP (Sekolah Menengah Pertama) / Sederajat</option>
-							<option>SMA (Sekolah Menengah Atas) / Sederajat</option>
-						</Form.Control>
-					</SelectContainer>
-				</Col>
-			</Row>
-			<ResultContainer>
+			<Form onSubmit={handleSubmit}>
 				<Row>
 					<Col>
-						<CaptionSharp className="mb-2">Pratinjau Profil</CaptionSharp>
-
-						<ProfileCard>
-							<Card.Body>
-								<CaptionSharp>
-									<b>{fullName ? fullName : "Nama Kamu Disini"}</b>
-								</CaptionSharp>
-								<CaptionSharp>{creds}</CaptionSharp>
-								{level.length > 0 && (
-									<StyledBadge variant="success">{level}</StyledBadge>
-								)}
-							</Card.Body>
-						</ProfileCard>
-						{fullName.length >= 1 && (
-							<CaptionSharp className="mb-2">Profilmu sudah oke?</CaptionSharp>
-						)}
+						<InputGroup className="mb-3">
+							<InputGroup.Prepend>
+								<InputGroup.Text id="basic-addon1">😊</InputGroup.Text>
+							</InputGroup.Prepend>
+							<FormControl
+								placeholder="Nama Siswa (Harus Diisi)"
+								name="fullName"
+								onChange={handleChange}
+							/>
+						</InputGroup>
+						<InputGroup className="mb-3">
+							<InputGroup.Prepend>
+								<InputGroup.Text id="basic-addon1">🏫</InputGroup.Text>
+							</InputGroup.Prepend>
+							<FormControl
+								placeholder="Nama Sekolah"
+								name="creds"
+								onChange={handleChange}
+							/>
+						</InputGroup>
+						<SelectContainer>
+							<Form.Control
+								size="sm"
+								as="select"
+								onChange={handleChange}
+								name="level"
+							>
+								<option>SD (Sekolah Dasar) / Sederajat</option>
+								<option>SMP (Sekolah Menengah Pertama) / Sederajat</option>
+								<option>SMA (Sekolah Menengah Atas) / Sederajat</option>
+							</Form.Control>
+						</SelectContainer>
 					</Col>
 				</Row>
-				{fullName.length >= 3 && (
-					<Button variant="outline-success" onClick={handleSubmit}>
-						Lanjutkan
-					</Button>
-				)}
-			</ResultContainer>
+				<ResultContainer>
+					<Row>
+						<Col>
+							<CaptionSharp className="mb-2">Pratinjau Profil</CaptionSharp>
+
+							<ProfileCard>
+								<Card.Body>
+									<CaptionSharp>
+										<b>{fullName ? fullName : "Nama Kamu Disini"}</b>
+									</CaptionSharp>
+									<CaptionSharp>{creds}</CaptionSharp>
+									{level.length > 0 && (
+										<StyledBadge variant="success">{level}</StyledBadge>
+									)}
+								</Card.Body>
+							</ProfileCard>
+							{fullName.length >= 1 && (
+								<CaptionSharp className="mb-2">
+									Profilmu sudah oke?
+								</CaptionSharp>
+							)}
+						</Col>
+					</Row>
+					{fullName.length >= 3 && (
+						<Button variant="outline-success" type="submit">
+							Lanjutkan
+						</Button>
+					)}
+				</ResultContainer>
+			</Form>
 		</>
 	);
 };
