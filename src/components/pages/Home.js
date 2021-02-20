@@ -174,8 +174,7 @@ const LoginView = () => {
 	);
 };
 const AnswerModal = (props) => {
-	const { show, onHide } = props;
-
+	const { show, onHide, answermodaldetail } = props;
 	const settings = {
 		dots: true,
 		infinite: true,
@@ -191,12 +190,9 @@ const AnswerModal = (props) => {
 			</Modal.Header>
 			<Modal.Body>
 				<StyledSlider {...settings}>
-					<div>
-						<Card>asd asdfasd asd sadas das dsadas </Card>
-					</div>
-					<div>
-						<h3>2</h3>
-					</div>
+					{answermodaldetail.answers.map((x) => (
+						<div>{x.answer}</div>
+					))}
 				</StyledSlider>
 			</Modal.Body>
 			<Modal.Footer>
@@ -207,10 +203,10 @@ const AnswerModal = (props) => {
 		</Modal>
 	);
 };
-const Question = ({ question, ix, closeQuestion, setShowModal }) => {
+const Question = ({ question, ix, closeQuestion, setAnswerModalDetail }) => {
 	const handleClick = () => {
 		if (question.answers.length > 0) {
-			setShowModal(true);
+			setAnswerModalDetail({ answers: question.answers, show: true });
 		}
 	};
 	return (
@@ -261,7 +257,10 @@ const Question = ({ question, ix, closeQuestion, setShowModal }) => {
 const MenteeView = ({ currentUser, signOut }) => {
 	const [key, setKey] = useState("semua_tugas");
 	const [showNewQModal, setShowNewQModal] = useState(false);
-	const [showAnswerModal, setShowAnswerModal] = useState(false);
+	const [answerModalDetail, setAnswerModalDetail] = useState({
+		show: false,
+		answers: [],
+	});
 
 	const { name, level, creds } = currentUser;
 
@@ -281,7 +280,7 @@ const MenteeView = ({ currentUser, signOut }) => {
 	}, []);
 
 	useEffect(() => {
-		setAnsQ(questions.filter((q) => q.answers && q.answers.length > 0));
+		setAnsQ(questions.filter((q) => q.answers && q.answers.length > 0)); // sorting newest to oldest question
 	}, [questions]);
 
 	return (
@@ -295,8 +294,11 @@ const MenteeView = ({ currentUser, signOut }) => {
 				states={question}
 			/>
 			<AnswerModal
-				show={showAnswerModal}
-				onHide={() => setShowAnswerModal(false)}
+				show={answerModalDetail.show}
+				onHide={() =>
+					setAnswerModalDetail({ ...answerModalDetail, show: false })
+				}
+				answermodaldetail={answerModalDetail}
 			/>
 			<Col>
 				<StyledTabs activeKey={key} onSelect={(k) => setKey(k)}>
@@ -330,7 +332,8 @@ const MenteeView = ({ currentUser, signOut }) => {
 										question={q}
 										ix={ix}
 										key={ix}
-										setShowModal={setShowAnswerModal}
+										setAnswerModalDetail={setAnswerModalDetail}
+										answerModalDetail={answerModalDetail}
 									/>
 								))
 						)}
@@ -345,7 +348,8 @@ const MenteeView = ({ currentUser, signOut }) => {
 									question={q}
 									ix={ix}
 									key={ix}
-									setShowModal={setShowAnswerModal}
+									setAnswerModalDetail={setAnswerModalDetail}
+									answerModalDetail={answerModalDetail}
 								/>
 							))
 						) : (
