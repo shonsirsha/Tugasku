@@ -1,7 +1,7 @@
 import React, { useReducer, useEffect } from "react";
 import AuthContext from "./authContext";
 import AuthReducer from "./authReducer";
-import { db, auth } from "../../firebase";
+import { db, auth, firebase } from "../../firebase";
 import {
 	CHECK_AUTH,
 	USER_AUTH,
@@ -187,6 +187,21 @@ const AuthState = (props) => {
 			}
 		}
 	};
+	const answerQuestion = async (ansObj) => {
+		const { tugasId, answer, mentorId, time } = ansObj;
+		let ans = { answer, mentorId, time };
+		try {
+			await db
+				.collection("tugas")
+				.doc(tugasId)
+				.update({
+					answers: firebase.firestore.FieldValue.arrayUnion(ans),
+				});
+		} catch (e) {
+			console.log("error closing question");
+			console.log(e);
+		}
+	};
 	const closeQuestion = async (tugasId) => {
 		try {
 			await db.collection("tugas").doc(tugasId).update({
@@ -244,6 +259,7 @@ const AuthState = (props) => {
 				getQuestions,
 				closeQuestion,
 				createQuestion,
+				answerQuestion,
 			}}
 		>
 			{props.children}

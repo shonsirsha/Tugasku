@@ -197,27 +197,31 @@ const AnswerModal = (props) => {
 			</Modal.Header>
 			<Modal.Body>
 				<StyledSlider {...settings}>
-					{answermodaldetail.answers
-						.sort((a, b) => b.time - a.time)
-						.map((x) => (
-							<>
-								<ProfileCard>
-									<Card.Body>
-										<CaptionSharp>
-											<b>{x.answer}</b>
-										</CaptionSharp>
-										<hr style={{ marginTop: "8px", marginBottom: "4px" }} />
-										<Badge variant="primary">MENTOR 🎖️</Badge>
-										<CaptionSharp className="mt-1" style={{ fontSize: "13px" }}>
-											<b>Jean Claude VanDamme</b>
-										</CaptionSharp>
-										<CaptionSharp style={{ fontSize: "13px" }}>
-											Software Engineer at Google
-										</CaptionSharp>
-									</Card.Body>
-								</ProfileCard>
-							</>
-						))}
+					{answermodaldetail.answers &&
+						answermodaldetail.answers
+							.sort((a, b) => b.time - a.time)
+							.map((x) => (
+								<>
+									<ProfileCard>
+										<Card.Body>
+											<CaptionSharp>
+												<b>{x.answer}</b>
+											</CaptionSharp>
+											<hr style={{ marginTop: "8px", marginBottom: "4px" }} />
+											<Badge variant="primary">MENTOR 🎖️</Badge>
+											<CaptionSharp
+												className="mt-1"
+												style={{ fontSize: "13px" }}
+											>
+												<b>Jean Claude VanDamme</b>
+											</CaptionSharp>
+											<CaptionSharp style={{ fontSize: "13px" }}>
+												Software Engineer at Google
+											</CaptionSharp>
+										</Card.Body>
+									</ProfileCard>
+								</>
+							))}
 				</StyledSlider>
 				<CaptionSharp>Geser untuk melihat jawaban lainnya</CaptionSharp>
 			</Modal.Body>
@@ -231,10 +235,15 @@ const Question = ({
 	closeQuestion,
 	setAnswerModalDetail,
 	currentUser,
+	setAnswerDetail,
+	answerDetail,
+	setShowNewQModal,
+	setModalType,
 }) => {
 	const { userType, id } = currentUser;
 	const [answeredByMe, setAnsweredByMe] = useState(false);
 	const handleClick = () => {
+		// clicking on the card
 		if (question.answers.length > 0 && userType === 10) {
 			setAnswerModalDetail({ answers: question.answers, show: true });
 		}
@@ -243,13 +252,19 @@ const Question = ({
 		if (userType === 10) {
 			closeQuestion(question.tugasId);
 		} else {
-			// alert("W");
+			setModalType("answer");
+			setShowNewQModal(true);
+			setAnswerDetail({
+				...answerDetail,
+				tugasId: question.tugasId,
+				mentorId: id,
+			});
 		}
 	};
 
 	useEffect(() => {
 		setAnsweredByMe(hasBeenAnsweredByMe(question.answers, id));
-	}, []);
+	}, [question]);
 	return (
 		<QuestionCard
 			onClick={handleClick}
@@ -308,7 +323,7 @@ const Question = ({
 							</>
 						)
 					) : (
-						"Tugas telah dititup"
+						"Tugas telah ditutup"
 					)}
 				</div>
 			</StyledCardFooter>
@@ -335,6 +350,14 @@ const MenteeView = ({ currentUser, signOut }) => {
 		mapel: "",
 	});
 
+	const [modalType, setModalType] = useState("question");
+
+	const [answerDetail, setAnswerDetail] = useState({
+		answer: "",
+		mentorId: "",
+		tugasId: "",
+	});
+
 	useEffect(() => {
 		getQuestions(currentUser);
 		setLoading(false);
@@ -354,11 +377,24 @@ const MenteeView = ({ currentUser, signOut }) => {
 		<Row>
 			<QuestionAnswerModal
 				show={showNewQModal}
-				onHide={() => setShowNewQModal(false)}
-				title={"Tugas Baru"}
-				type={"question"}
+				onHide={() => {
+					setShowNewQModal(false);
+					setAnswerDetail({
+						answer: "",
+						mentorId: "",
+						tugasId: "",
+					});
+					setQuestion({
+						question: "",
+						mapel: "",
+					});
+				}}
+				title={`${modalType === `question` ? `Tugas Baru` : `Jawab`}`}
+				type={modalType}
 				stateSetter={setQuestion}
 				states={question}
+				answerDetail={answerDetail}
+				setAnswerDetail={setAnswerDetail}
 			/>
 			<AnswerModal
 				show={answerModalDetail.show}
@@ -399,6 +435,7 @@ const MenteeView = ({ currentUser, signOut }) => {
 								className={"my-4"}
 								variant="outline-secondary"
 								onClick={() => {
+									setModalType("question");
 									setShowNewQModal(true);
 								}}
 								style={{ width: "100%" }}
@@ -428,6 +465,10 @@ const MenteeView = ({ currentUser, signOut }) => {
 											currentUser={currentUser}
 											setAnswerModalDetail={setAnswerModalDetail}
 											answerModalDetail={answerModalDetail}
+											setAnswerDetail={setAnswerDetail}
+											answerDetail={answerDetail}
+											setShowNewQModal={setShowNewQModal}
+											setModalType={setModalType}
 										/>
 									))}
 							</div>
@@ -446,6 +487,10 @@ const MenteeView = ({ currentUser, signOut }) => {
 									currentUser={currentUser}
 									setAnswerModalDetail={setAnswerModalDetail}
 									answerModalDetail={answerModalDetail}
+									setAnswerDetail={setAnswerDetail}
+									answerDetail={answerDetail}
+									setShowNewQModal={setShowNewQModal}
+									setModalType={setModalType}
 								/>
 							))
 						) : (
@@ -486,17 +531,31 @@ const MenteeView = ({ currentUser, signOut }) => {
 	);
 };
 const QuestionAnswerModal = (props) => {
-	const { show, onHide, title, type, stateSetter, states } = props;
+	const {
+		show,
+		onHide,
+		title,
+		type,
+		stateSetter,
+		states,
+		answerDetail,
+		setAnswerDetail,
+	} = props;
 	const authContext = useContext(AuthContext);
 
-	const { createQuestion, currentUser } = authContext;
+	const { createQuestion, currentUser, answerQuestion } = authContext;
 	const [loading, setLoading] = useState(false);
 
 	const handleChange = (e) => {
-		stateSetter({ ...states, [e.target.name]: e.target.value });
+		if (type === "question") {
+			stateSetter({ ...states, [e.target.name]: e.target.value });
+		} else {
+			setAnswerDetail({ ...answerDetail, answer: e.target.value });
+		}
 	};
 	const handleSubmit = async () => {
 		setLoading(true);
+
 		if (type === "question") {
 			const time = Date.now();
 			await createQuestion({
@@ -508,6 +567,15 @@ const QuestionAnswerModal = (props) => {
 				questionId: `${states.mapel}-${time}`,
 			});
 			stateSetter({ question: "", mapel: "" });
+		} else {
+			const time = Date.now();
+			const ansObj = {
+				time,
+				answer: answerDetail.answer,
+				tugasId: answerDetail.tugasId,
+				mentorId: currentUser.id,
+			};
+			answerQuestion(ansObj);
 		}
 		setLoading(false);
 		onHide();
@@ -524,98 +592,121 @@ const QuestionAnswerModal = (props) => {
 				<Modal.Title id="contained-modal-title-vcenter">{title}</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
-				<Form.Group>
-					<Form.Label>Pertanyaan</Form.Label>
-					<Form.Control
-						as="textarea"
-						rows={3}
-						onChange={handleChange}
-						value={states.question}
-						name="question"
-					/>
-					<Form.Label className="mt-3">Mata Pelajaran:</Form.Label>
-					<div>
-						<Form.Check
-							className="mb-1"
-							label="Bahasa Indonesia"
-							type={"radio"}
-							name="mapel"
-							value={"bindo"}
-							checked={states.mapel === "bindo"}
+				{type === "question" ? (
+					<Form.Group>
+						<Form.Label>Pertanyaan</Form.Label>
+						<Form.Control
+							as="textarea"
+							rows={3}
 							onChange={handleChange}
+							name="question"
 						/>
-						<Form.Check
-							className="mb-1"
-							label="Bahasa Inggris / Asing"
-							type={"radio"}
-							name="mapel"
-							value={"asing"}
-							checked={states.mapel === "asing"}
-							onChange={handleChange}
-						/>
-						<Form.Check
-							className="mb-1"
-							label="IPA"
-							type={"radio"}
-							name="mapel"
-							value={"ipa"}
-							checked={states.mapel === "ipa"}
-							onChange={handleChange}
-						/>
-						<Form.Check
-							className="mb-1"
-							label="IPS"
-							type={"radio"}
-							name="mapel"
-							value={"ips"}
-							checked={states.mapel === "ips"}
-							onChange={handleChange}
-						/>
-						<Form.Check
-							className="mb-1"
-							label="Matematika"
-							type={"radio"}
-							name="mapel"
-							value={"mtk"}
-							checked={states.mapel === "mtk"}
-							onChange={handleChange}
-						/>
-						<Form.Check
-							className="mb-1"
-							label="PPKN"
-							type={"radio"}
-							name="mapel"
-							value={"pkn"}
-							checked={states.mapel === "pkn"}
-							onChange={handleChange}
-						/>
+						<Form.Label className="mt-3">Mata Pelajaran:</Form.Label>
+						<div>
+							<Form.Check
+								className="mb-1"
+								label="Bahasa Indonesia"
+								type={"radio"}
+								name="mapel"
+								value={"bindo"}
+								checked={states.mapel === "bindo"}
+								onChange={handleChange}
+							/>
+							<Form.Check
+								className="mb-1"
+								label="Bahasa Inggris / Asing"
+								type={"radio"}
+								name="mapel"
+								value={"asing"}
+								checked={states.mapel === "asing"}
+								onChange={handleChange}
+							/>
+							<Form.Check
+								className="mb-1"
+								label="IPA"
+								type={"radio"}
+								name="mapel"
+								value={"ipa"}
+								checked={states.mapel === "ipa"}
+								onChange={handleChange}
+							/>
+							<Form.Check
+								className="mb-1"
+								label="IPS"
+								type={"radio"}
+								name="mapel"
+								value={"ips"}
+								checked={states.mapel === "ips"}
+								onChange={handleChange}
+							/>
+							<Form.Check
+								className="mb-1"
+								label="Matematika"
+								type={"radio"}
+								name="mapel"
+								value={"mtk"}
+								checked={states.mapel === "mtk"}
+								onChange={handleChange}
+							/>
+							<Form.Check
+								className="mb-1"
+								label="PPKN"
+								type={"radio"}
+								name="mapel"
+								value={"pkn"}
+								checked={states.mapel === "pkn"}
+								onChange={handleChange}
+							/>
 
-						<Form.Check
-							className="mb-1"
-							label="Seni Budaya"
-							type={"radio"}
-							name="mapel"
-							value={"sbk"}
-							checked={states.mapel === "sbk"}
-							onChange={handleChange}
-						/>
+							<Form.Check
+								className="mb-1"
+								label="Seni Budaya"
+								type={"radio"}
+								name="mapel"
+								value={"sbk"}
+								checked={states.mapel === "sbk"}
+								onChange={handleChange}
+							/>
 
-						<Form.Check
-							className="mb-1"
-							label="TIK"
-							type={"radio"}
-							name="mapel"
-							value={"tik"}
-							checked={states.mapel === "tik"}
-							onChange={handleChange}
-						/>
-					</div>
-				</Form.Group>
+							<Form.Check
+								className="mb-1"
+								label="TIK"
+								type={"radio"}
+								name="mapel"
+								value={"tik"}
+								checked={states.mapel === "tik"}
+								onChange={handleChange}
+							/>
+						</div>
+					</Form.Group>
+				) : (
+					<>
+						<Form.Group>
+							<Form.Label>Jawaban</Form.Label>
+							<Form.Control
+								as="textarea"
+								rows={3}
+								onChange={handleChange}
+								value={answerDetail.answer}
+								name="answer"
+							/>
+						</Form.Group>
+					</>
+				)}
 			</Modal.Body>
 			<Modal.Footer>
-				{states.question.length > 0 && states.mapel.length > 0 && (
-					<Button onClick={handleSubmit} variant="success" disabled={loading}>
-						{loading ? "Membuat..." : "Buat"}
+				{(answerDetail.answer.length > 0 ||
+					(states.question.length > 0 && states.mapel.length > 0)) && (
+					<Button
+						onClick={() => {
+							handleSubmit();
+						}}
+						variant="success"
+						disabled={loading}
+					>
+						{loading
+							? `${type === "question" ? `Membuat...` : `Menjawab...`}`
+							: `${type === "question" ? `Buat` : `Jawab`}`}
 					</Button>
 				)}
 			</Modal.Footer>

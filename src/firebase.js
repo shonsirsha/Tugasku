@@ -16,4 +16,4 @@ const auth = firebase.auth();
 
 db.enablePersistence();
 
-export { db, auth, app };
+export { db, auth, app, firebase };
