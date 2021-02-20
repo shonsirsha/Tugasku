@@ -213,10 +213,10 @@ const AnswerModal = (props) => {
 												className="mt-1"
 												style={{ fontSize: "13px" }}
 											>
-												<b>Jean Claude VanDamme</b>
+												<b>{x.mentorName}</b>
 											</CaptionSharp>
 											<CaptionSharp style={{ fontSize: "13px" }}>
-												Software Engineer at Google
+												{x.mentorCreds}
 											</CaptionSharp>
 										</Card.Body>
 									</ProfileCard>

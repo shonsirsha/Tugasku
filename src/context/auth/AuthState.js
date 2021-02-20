@@ -151,7 +151,11 @@ const AuthState = (props) => {
 									.get();
 								mentorDetailQuerySnapshot.forEach((doc) => {
 									// doc.data() is never undefined for query doc snapshots
-									ansObj = { ...z, mentorName: doc.data().name };
+									ansObj = {
+										...z,
+										mentorName: doc.data().name,
+										mentorCreds: doc.data().creds,
+									};
 								});
 								allAnswersOfAQuestion.push(ansObj);
 							});
