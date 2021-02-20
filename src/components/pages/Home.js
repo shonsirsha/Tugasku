@@ -8,6 +8,8 @@ import {
 	Tab,
 	Card,
 	Badge,
+	Modal,
+	InputGroup,
 	Tabs,
 } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
@@ -89,6 +91,7 @@ const StyledTabs = styled(Tabs)`
 	&.nav-tabs {
 		border: none;
 	}
+
 	background: #eaeaea;
 	padding: 16px;
 	margin-bottom: 24px;
@@ -165,13 +168,13 @@ const Question = ({ question, ix, closeQuestion }) => {
 					{mapel[question.mapel].actualName}
 				</StyledBadge>
 				<StyledCaptionSharp className="mt-1">
-					{question.answers
+					{question.answers.length > 0
 						? `Lihat ${question.answers.length} jawaban`
 						: "Belum ada jawaban"}
 				</StyledCaptionSharp>
 			</Card.Body>
 			<StyledCardFooter className="text-muted">
-				{timeDifference(Date.now(), new Date(question.time * 1000))}
+				{timeDifference(Date.now(), new Date(question.time))}
 				<div>
 					{question.status === "open" ? (
 						<Button
@@ -192,13 +195,18 @@ const Question = ({ question, ix, closeQuestion }) => {
 };
 const MenteeView = ({ currentUser, signOut }) => {
 	const [key, setKey] = useState("semua_tugas");
-
+	const [showNewQModal, setShowNewQModal] = useState(false);
 	const { name, level, creds } = currentUser;
 
 	const authContext = useContext(AuthContext);
 	const { getQuestions, questions, closeQuestion } = authContext;
 	const [loading, setLoading] = useState(true);
 	const [ansQ, setAnsQ] = useState([]);
+
+	const [question, setQuestion] = useState({
+		question: "",
+		mapel: "",
+	});
 
 	useEffect(() => {
 		getQuestions(currentUser);
@@ -211,6 +219,14 @@ const MenteeView = ({ currentUser, signOut }) => {
 
 	return (
 		<Row>
+			<QuestionAnswerModal
+				show={showNewQModal}
+				onHide={() => setShowNewQModal(false)}
+				title={"Tugas Baru"}
+				type={"question"}
+				stateSetter={setQuestion}
+				states={question}
+			/>
 			<Col>
 				<StyledTabs activeKey={key} onSelect={(k) => setKey(k)}>
 					<Tab eventKey="semua_tugas" title="Semua Tugas">
@@ -218,28 +234,39 @@ const MenteeView = ({ currentUser, signOut }) => {
 							📝 &nbsp;<b>{currentUser.name.split(" ")[0]}</b>, semua tugasmu
 							ada disini.
 						</p>
-						<p style={{ fontSize: "13px" }}>
+						<p style={{ fontSize: "13px", marginBottom: "0" }}>
 							🔒 <b>Tutup tugas</b>: tugas yang telah ditutup tidak akan muncul
 							di halaman Mentor.
 						</p>
-
+						<Button
+							className={"my-4"}
+							variant="outline-secondary"
+							onClick={() => {
+								setShowNewQModal(true);
+							}}
+							style={{ width: "100%" }}
+						>
+							📝 &nbsp; Buat Tugas Baru
+						</Button>
 						{loading ? (
 							<p>Mengambil semua tugas...</p>
 						) : (
-							questions.map((q, ix) => (
-								<Question
-									closeQuestion={closeQuestion}
-									question={q}
-									ix={ix}
-									key={ix}
-								/>
-							))
+							questions
+								.sort((a, b) => b.time - a.time)
+								.map((q, ix) => (
+									<Question
+										closeQuestion={closeQuestion}
+										question={q}
+										ix={ix}
+										key={ix}
+									/>
+								))
 						)}
 					</Tab>
 					<Tab eventKey="tugas_dijawab" title="Tugas Dijawab">
 						{loading ? (
 							<p>Mengambil semua tugas...</p>
-						) : (
+						) : ansQ.length > 0 ? (
 							ansQ.map((q, ix) => (
 								<Question
 									closeQuestion={closeQuestion}
@@ -248,6 +275,16 @@ const MenteeView = ({ currentUser, signOut }) => {
 									key={ix}
 								/>
 							))
+						) : (
+							<p
+								style={{
+									fontSize: "13px",
+									marginBottom: "4px",
+									textAlign: "center",
+								}}
+							>
+								😬 &nbsp; Belum ada tugas yang dijawab...
+							</p>
 						)}
 					</Tab>
 					<Tab eventKey="profile" title="Profil">
@@ -267,6 +304,137 @@ const MenteeView = ({ currentUser, signOut }) => {
 				</StyledTabs>
 			</Col>
 		</Row>
+	);
+};
+const QuestionAnswerModal = (props) => {
+	const { show, onHide, title, type, stateSetter, states } = props;
+	const authContext = useContext(AuthContext);
+
+	const { createQuestion, currentUser } = authContext;
+
+	const handleChange = (e) => {
+		stateSetter({ ...states, [e.target.name]: e.target.value });
+	};
+	const handleSubmit = async () => {
+		const time = Date.now();
+		await createQuestion({
+			...states,
+			menteeId: currentUser.id,
+			status: "open",
+			time,
+			answers: [],
+			questionId: `${states.mapel}-${time}`,
+		});
+		onHide();
+	};
+	return (
+		<Modal
+			show={show}
+			onHide={onHide}
+			size="lg"
+			aria-labelledby="contained-modal-title-vcenter"
+			centered
+		>
+			<Modal.Header closeButton>
+				<Modal.Title id="contained-modal-title-vcenter">{title}</Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+				<Form.Group>
+					<Form.Label>Pertanyaan</Form.Label>
+					<Form.Control
+						as="textarea"
+						rows={3}
+						onChange={handleChange}
+						value={states.question}
+						name="question"
+					/>
+					<Form.Label className="mt-3">Mata Pelajaran:</Form.Label>
+					<div>
+						<Form.Check
+							className="mb-1"
+							label="Bahasa Indonesia"
+							type={"radio"}
+							name="mapel"
+							value={"bindo"}
+							checked={states.mapel === "bindo"}
+							onChange={handleChange}
+						/>
+						<Form.Check
+							className="mb-1"
+							label="Bahasa Inggris / Asing"
+							type={"radio"}
+							name="mapel"
+							value={"asing"}
+							checked={states.mapel === "asing"}
+							onChange={handleChange}
+						/>
+						<Form.Check
+							className="mb-1"
+							label="IPA"
+							type={"radio"}
+							name="mapel"
+							value={"ipa"}
+							checked={states.mapel === "ipa"}
+							onChange={handleChange}
+						/>
+						<Form.Check
+							className="mb-1"
+							label="IPS"
+							type={"radio"}
+							name="mapel"
+							value={"ips"}
+							checked={states.mapel === "ips"}
+							onChange={handleChange}
+						/>
+						<Form.Check
+							className="mb-1"
+							label="Matematika"
+							type={"radio"}
+							name="mapel"
+							value={"mtk"}
+							checked={states.mapel === "mtk"}
+							onChange={handleChange}
+						/>
+						<Form.Check
+							className="mb-1"
+							label="PPKN"
+							type={"radio"}
+							name="mapel"
+							value={"pkn"}
+							checked={states.mapel === "pkn"}
+							onChange={handleChange}
+						/>
+
+						<Form.Check
+							className="mb-1"
+							label="Seni Budaya"
+							type={"radio"}
+							name="mapel"
+							value={"sbk"}
+							checked={states.mapel === "sbk"}
+							onChange={handleChange}
+						/>
+
+						<Form.Check
+							className="mb-1"
+							label="TIK"
+							type={"radio"}
+							name="mapel"
+							value={"tik"}
+							checked={states.mapel === "tik"}
+							onChange={handleChange}
+						/>
+					</div>
+				</Form.Group>
+			</Modal.Body>
+			<Modal.Footer>
+				{states.question.length > 0 && states.mapel.length > 0 && (
+					<Button onClick={handleSubmit} variant="success">
+						Kirim
+					</Button>
+				)}
+			</Modal.Footer>
+		</Modal>
 	);
 };
 const Home = () => {

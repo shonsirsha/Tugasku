@@ -168,6 +168,16 @@ const AuthState = (props) => {
 			console.log(e);
 		}
 	};
+	const createQuestion = async (questionObj) => {
+		try {
+			const { questionId } = questionObj;
+			const userRef = db.collection("tugas").doc(questionId);
+			await userRef.set(questionObj);
+		} catch (e) {
+			console.log("error creating question");
+			console.log(e);
+		}
+	};
 	const signOut = async () => {
 		startLoading();
 		try {
@@ -204,6 +214,7 @@ const AuthState = (props) => {
 				signOut,
 				getQuestions,
 				closeQuestion,
+				createQuestion,
 			}}
 		>
 			{props.children}

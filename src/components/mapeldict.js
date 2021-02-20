@@ -9,7 +9,7 @@ const mapel = {
 	},
 	bindo: {
 		actualName: "Bahasa Indonesia",
-		color: "#9bad85",
+		color: "#fb271f",
 	},
 	asing: {
 		actualName: "Bahasa Inggris / Asing",
@@ -29,7 +29,7 @@ const mapel = {
 	},
 	ips: {
 		actualName: "IPS",
-		color: "#fb271f",
+		color: "#9bad85",
 	},
 };
 

@@ -8,7 +8,7 @@ export function timeDifference(current, previous) {
 	var elapsed = current - previous;
 
 	if (elapsed < msPerMinute) {
-		return Math.round(elapsed / 1000) + " detik yang lalu";
+		return "Baru saja";
 	} else if (elapsed < msPerHour) {
 		return Math.round(elapsed / msPerMinute) + " menit yang lalu";
 	} else if (elapsed < msPerDay) {
