@@ -175,6 +175,9 @@ const LoginView = () => {
 							name="password"
 							onChange={handleChange}
 						/>
+						<Form.Text className="text-muted mb-3">
+							Password harus lebih dari 5 karakter
+						</Form.Text>
 
 						<Button variant="success" type="submit">
 							{authLoading ? "Loading.." : "Lanjutkan"}
