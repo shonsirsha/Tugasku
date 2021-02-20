@@ -512,9 +512,35 @@ const MenteeView = ({ currentUser, signOut }) => {
 									<b>{name ? name : "Nama Kamu Disini"}</b>
 								</CaptionSharp>
 								<CaptionSharp>{creds}</CaptionSharp>
-								<StyledBadge variant="success" style={{ marginTop: "4px;" }}>
-									{level}
-								</StyledBadge>
+								<div style={{ display: "flex", flexDirection: "column" }}>
+									{userType === 10 ? (
+										<StyledBadge variant="success" style={{ marginTop: "4px" }}>
+											{level}
+										</StyledBadge>
+									) : (
+										<StyledBadge
+											variant="primary"
+											style={{ marginTop: "16px", maxWidth: "90px" }}
+										>
+											MENTOR 🎖️
+										</StyledBadge>
+									)}
+									<div>
+										{userType === 20 &&
+											currentUser.mapel.map((x) => (
+												<StyledBadge
+													variant="primary"
+													style={{
+														marginTop: "4px",
+														marginRight: "4px",
+														background: `${mapel[x].color}`,
+													}}
+												>
+													{mapel[x].actualName}
+												</StyledBadge>
+											))}
+									</div>
+								</div>
 							</Card.Body>
 						</ProfileCard>
 						<Button

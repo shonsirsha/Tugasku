@@ -1,7 +1,7 @@
 const mapel = {
 	mtk: {
 		actualName: "Matematika",
-		color: "#657497",
+		color: "#8395cf",
 	},
 	pkn: {
 		actualName: "PPKN",
@@ -21,7 +21,7 @@ const mapel = {
 	},
 	tik: {
 		actualName: "TIK",
-		color: "#9c2376",
+		color: "#4f67cd",
 	},
 	ipa: {
 		actualName: "IPA",
