@@ -147,32 +147,37 @@ const AuthState = (props) => {
 						let qArray = [];
 
 						querySnapshot.forEach((x) => {
-							let allAnswersOfAQuestion = [];
-							x.data().answers.map(async (z) => {
-								let ansObj = {};
-								const mentorDetailQuerySnapshot = await db
-									.collection("users")
-									.where("id", "==", z.mentorId)
-									.get();
-								mentorDetailQuerySnapshot.forEach((doc) => {
-									// doc.data() is never undefined for query doc snapshots
-									ansObj = {
-										...z,
-										mentorName: doc.data().name,
-										mentorCreds: doc.data().creds,
-									};
-								});
-								allAnswersOfAQuestion.push(ansObj);
+							let allAnswersFromAQuestion = x.data().answers;
+
+							let v = [];
+
+							allAnswersFromAQuestion.map((answerObj, ix) => {
+								db.collection("users")
+									.where("id", "==", answerObj.mentorId)
+									.onSnapshot((userSnapshot) => {
+										userSnapshot.forEach((user) => {
+											// mentor
+											let newAnsObj = {};
+											newAnsObj = {
+												...answerObj,
+												mentorName: user.data().name,
+												mentorCreds: user.data().creds,
+											};
+											v.push(newAnsObj);
+										});
+										qArray.push({
+											...x.data(),
+											tugasId: x.id,
+											answers: v,
+										});
+										if (ix === allAnswersFromAQuestion.length - 1) {
+											dispatch({
+												type: GET_ALL_QUESTIONS,
+												payload: { questions: qArray },
+											});
+										}
+									});
 							});
-							qArray.push({
-								...x.data(),
-								tugasId: x.id,
-								answers: allAnswersOfAQuestion,
-							});
-						});
-						dispatch({
-							type: GET_ALL_QUESTIONS,
-							payload: { questions: qArray },
 						});
 					},
 					(err) => {

@@ -292,6 +292,9 @@ const Question = ({
 					{mapel[question.mapel].actualName}
 				</StyledBadge>
 				<StyledCaptionSharp className="mt-1">
+					{/* {userType === 10 && `Lihat ${question.answers.length} jawaban`}
+					{userType === 20 &&
+						`Telah dijawab oleh ${question.answers.length} mentor`} */}
 					{question.answers.length > 0
 						? userType === 10
 							? `Lihat ${question.answers.length} jawaban`
@@ -330,7 +333,15 @@ const Question = ({
 							</>
 						)
 					) : (
-						"Tugas telah ditutup"
+						<>
+							{answeredByMe ? (
+								<StyledCaptionSharp className="mt-1 text-muted">
+									✅
+								</StyledCaptionSharp>
+							) : (
+								"Tugas telah ditutup"
+							)}
+						</>
 					)}
 				</div>
 			</StyledCardFooter>
