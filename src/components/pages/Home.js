@@ -244,19 +244,8 @@ const MenteeView = ({ currentUser, signOut }) => {
 const Home = () => {
 	const authContext = useContext(AuthContext);
 	const { currentUser, authLoading, updateProfile, signOut } = authContext;
-	// const { creds, name, id } = currentUser;
 	const [rendered, setRendered] = useState(<></>);
 	const history = useHistory();
-
-	// useEffect(() => {
-	// 	if (authLoading) {
-	// 		setRendered(<p>Loading...</p>);
-	// 	} else {
-	// 		if (!currentUser) {
-	// 			setRendered(<LoginView />);
-	// 		}
-	// 	}
-	// }, [authLoading]);
 
 	useEffect(() => {
 		if (authLoading) {
