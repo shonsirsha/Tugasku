@@ -3,26 +3,20 @@ import AuthContext from "./authContext";
 import AuthReducer from "./authReducer";
 import { db, auth, firebase } from "../../firebase";
 import {
-	CHECK_AUTH,
 	USER_AUTH,
-	USER_NOT_AUTH,
 	SET_LOADING,
 	STOP_LOADING,
-	SET_AUTH_LOADING,
-	SIGN_UP_FAIL,
 	SIGN_IN_FAIL,
-	USER_EXISTS,
-	USER_DOESNT_EXIST,
-	RESET_EMAIL_EXISTS,
-	RESET_ALERT,
 	GET_ALL_QUESTIONS,
 	SIGNED_OUT,
+	REMOVE_ERROR,
 } from "./types";
 const AuthState = (props) => {
 	const initialState = {
 		currentUser: null,
 		authLoading: true,
 		questions: [],
+		authErrorMsg: "",
 	};
 
 	const [state, dispatch] = useReducer(AuthReducer, initialState);
@@ -51,15 +45,21 @@ const AuthState = (props) => {
 					await handleSignIn(logOnDetail);
 					break;
 				case "auth/invalid-email":
-					console.log(`Email address is invalid.`);
+					stopLoading();
+
+					dispatch({ type: SIGN_IN_FAIL, payload: "Format E-mail salah" });
 					break;
 				case "auth/operation-not-allowed":
+					stopLoading();
 					console.log(`Error during sign up.`);
 					break;
 				case "auth/weak-password":
-					console.log(
-						"Password is not strong enough. Add additional characters including special characters and numbers."
-					);
+					stopLoading();
+					dispatch({
+						type: SIGN_IN_FAIL,
+						payload: "Password terlalu lemah",
+					});
+
 					break;
 				default:
 					console.log(error.message);
@@ -74,8 +74,13 @@ const AuthState = (props) => {
 			await auth.signInWithEmailAndPassword(email, password);
 			console.log("login to existing user");
 		} catch (error) {
-			console.log("error logging in to an existing user..");
-			console.log(error);
+			if (error.code === "auth/wrong-password") {
+				dispatch({
+					type: SIGN_IN_FAIL,
+					payload: "Password salah",
+				});
+			}
+			stopLoading();
 		}
 	};
 
@@ -244,6 +249,11 @@ const AuthState = (props) => {
 		}
 	};
 	const signOut = async () => {
+		dispatch({
+			type: REMOVE_ERROR,
+			payload: "Password terlalu lemah",
+		});
+
 		startLoading();
 		try {
 			await auth.signOut();
@@ -272,6 +282,7 @@ const AuthState = (props) => {
 				currentUser: state.currentUser,
 				authLoading: state.authLoading,
 				questions: state.questions,
+				authErrorMsg: state.authErrorMsg,
 				handleSignUp,
 				handleSignIn,
 				handleSignupToDb,

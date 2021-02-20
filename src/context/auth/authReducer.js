@@ -1,18 +1,11 @@
 import {
-	CHECK_AUTH,
 	USER_AUTH,
-	USER_NOT_AUTH,
 	SET_LOADING,
 	STOP_LOADING,
-	SET_AUTH_LOADING,
-	SIGN_UP_FAIL,
 	SIGN_IN_FAIL,
-	USER_EXISTS,
-	USER_DOESNT_EXIST,
-	RESET_EMAIL_EXISTS,
-	RESET_ALERT,
 	GET_ALL_QUESTIONS,
 	SIGNED_OUT,
+	REMOVE_ERROR,
 } from "./types";
 
 export default (state, action) => {
@@ -28,11 +21,22 @@ export default (state, action) => {
 				currentUser: null,
 				questions: [],
 			};
+		case SIGN_IN_FAIL:
+			return {
+				...state,
+				authErrorMsg: action.payload,
+			};
 		case GET_ALL_QUESTIONS:
 			return {
 				...state,
 				questions: action.payload.questions,
 			};
+		case REMOVE_ERROR:
+			return {
+				...state,
+				authErrorMsg: "",
+			};
+
 		case SET_LOADING:
 			return {
 				...state,

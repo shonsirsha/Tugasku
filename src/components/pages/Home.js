@@ -9,7 +9,7 @@ import {
 	Card,
 	Badge,
 	Modal,
-	InputGroup,
+	Alert,
 	Tabs,
 } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
@@ -128,16 +128,17 @@ const StyledSlider = styled(Slider)`
 const LoginView = () => {
 	const authContext = useContext(AuthContext);
 
-	const { handleSignUp, authLoading } = authContext;
+	const { handleSignUp, authLoading, authErrorMsg } = authContext;
 
 	const [logOnDetail, setLogOnDetail] = useState({
 		email: "",
 		password: "",
 	});
-	// const { email, password } = logOnDetail;
+
 	const handleChange = (e) => {
 		setLogOnDetail({ ...logOnDetail, [e.target.name]: e.target.value });
 	};
+
 	return (
 		<>
 			<Row>
@@ -152,6 +153,10 @@ const LoginView = () => {
 			</StyledRow>
 			<Row>
 				<Col>
+					{authErrorMsg.length > 0 && (
+						<Alert variant={"danger"}>{authErrorMsg}</Alert>
+					)}
+
 					<Form
 						onSubmit={(e) => {
 							e.preventDefault();
