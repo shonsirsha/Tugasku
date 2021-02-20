@@ -181,8 +181,6 @@ const AuthState = (props) => {
 						console.log(`Encountered error: ${err}`);
 					}
 				);
-
-				console.log(preferredMapel);
 			} catch (err) {
 				console.log(err);
 				console.log("error getting all questions");

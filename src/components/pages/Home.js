@@ -21,6 +21,8 @@ import styled from "styled-components";
 import AuthContext from "../../context/auth/authContext";
 import mapel from "../mapeldict";
 import { timeDifference } from "../../utils/timeDifference";
+import { hasBeenAnsweredByMe } from "../../utils/hasBeenAnsweredByMe";
+
 import Slider from "react-slick";
 
 const StyledHeadingMD = styled(HeadingMD)`
@@ -223,12 +225,31 @@ const AnswerModal = (props) => {
 		</Modal>
 	);
 };
-const Question = ({ question, ix, closeQuestion, setAnswerModalDetail }) => {
+const Question = ({
+	question,
+	ix,
+	closeQuestion,
+	setAnswerModalDetail,
+	currentUser,
+}) => {
+	const { userType, id } = currentUser;
+	const [answeredByMe, setAnsweredByMe] = useState(false);
 	const handleClick = () => {
-		if (question.answers.length > 0) {
+		if (question.answers.length > 0 && userType === 10) {
 			setAnswerModalDetail({ answers: question.answers, show: true });
 		}
 	};
+	const handleButtonCard = () => {
+		if (userType === 10) {
+			closeQuestion(question.tugasId);
+		} else {
+			// alert("W");
+		}
+	};
+
+	useEffect(() => {
+		setAnsweredByMe(hasBeenAnsweredByMe(question.answers, id));
+	}, []);
 	return (
 		<QuestionCard
 			onClick={handleClick}
@@ -250,7 +271,9 @@ const Question = ({ question, ix, closeQuestion, setAnswerModalDetail }) => {
 				</StyledBadge>
 				<StyledCaptionSharp className="mt-1">
 					{question.answers.length > 0
-						? `Lihat ${question.answers.length} jawaban`
+						? userType === 10
+							? `Lihat ${question.answers.length} jawaban`
+							: `Telah dijawab oleh ${question.answers.length} mentor`
 						: "Belum ada jawaban"}
 				</StyledCaptionSharp>
 			</Card.Body>
@@ -258,14 +281,32 @@ const Question = ({ question, ix, closeQuestion, setAnswerModalDetail }) => {
 				{timeDifference(Date.now(), new Date(question.time))}
 				<div>
 					{question.status === "open" ? (
-						<Button
-							variant="outline-secondary"
-							onClick={() => {
-								closeQuestion(question.tugasId);
-							}}
-						>
-							🔒
-						</Button>
+						userType == 10 ? (
+							<Button
+								variant="outline-secondary"
+								onClick={() => {
+									closeQuestion(question.tugasId);
+								}}
+							>
+								🔒
+							</Button>
+						) : (
+							<>
+								{answeredByMe ? (
+									<StyledCaptionSharp className="mt-1 text-muted">
+										✅
+									</StyledCaptionSharp>
+								) : (
+									<Button
+										size={"sm"}
+										variant="outline-success"
+										onClick={handleButtonCard}
+									>
+										Jawab
+									</Button>
+								)}
+							</>
+						)
 					) : (
 						"Tugas telah dititup"
 					)}
@@ -282,7 +323,7 @@ const MenteeView = ({ currentUser, signOut }) => {
 		answers: [],
 	});
 
-	const { name, level, creds, userType } = currentUser;
+	const { name, level, creds, userType, id } = currentUser;
 
 	const authContext = useContext(AuthContext);
 	const { getQuestions, questions, closeQuestion } = authContext;
@@ -300,7 +341,13 @@ const MenteeView = ({ currentUser, signOut }) => {
 	}, []);
 
 	useEffect(() => {
-		setAnsQ(questions.filter((q) => q.answers && q.answers.length > 0));
+		if (userType === 10) {
+			setAnsQ(questions.filter((q) => q.answers && q.answers.length > 0));
+		} else {
+			setAnsQ(
+				questions.filter((q) => q.answers && hasBeenAnsweredByMe(q.answers, id))
+			);
+		}
 	}, [questions]);
 
 	return (
@@ -329,10 +376,15 @@ const MenteeView = ({ currentUser, signOut }) => {
 								ada disini.
 							</p>
 						) : (
-							<p style={{ fontSize: "13px", marginBottom: "4px" }}>
-								📝 &nbsp;<b>{currentUser.name.split(" ")[0]}</b>, semua tugas
-								yang sesuai dengan prefrensi mata pelajaranmu ada disini
-							</p>
+							<>
+								<p style={{ fontSize: "13px", marginBottom: "4px" }}>
+									📝 &nbsp;<b>{currentUser.name.split(" ")[0]}</b>, semua tugas
+									yang sesuai dengan prefrensi mata pelajaranmu ada disini
+								</p>
+								<p style={{ fontSize: "13px", marginBottom: "4px" }}>
+									✅ &nbsp; = Tugas yang telah kamu jawab
+								</p>
+							</>
 						)}
 
 						{userType === 10 && (
@@ -364,7 +416,7 @@ const MenteeView = ({ currentUser, signOut }) => {
 						{loading ? (
 							<p>Mengambil semua tugas...</p>
 						) : (
-							<div className={`${userType === 20 && `mt-4`}`}>
+							<div className={`${userType === 20 && `mt-2`}`}>
 								{questions
 									.sort((a, b) => b.time - a.time)
 									.map((q, ix) => (
@@ -373,6 +425,7 @@ const MenteeView = ({ currentUser, signOut }) => {
 											question={q}
 											ix={ix}
 											key={ix}
+											currentUser={currentUser}
 											setAnswerModalDetail={setAnswerModalDetail}
 											answerModalDetail={answerModalDetail}
 										/>
@@ -390,6 +443,7 @@ const MenteeView = ({ currentUser, signOut }) => {
 									question={q}
 									ix={ix}
 									key={ix}
+									currentUser={currentUser}
 									setAnswerModalDetail={setAnswerModalDetail}
 									answerModalDetail={answerModalDetail}
 								/>
@@ -418,7 +472,11 @@ const MenteeView = ({ currentUser, signOut }) => {
 								</StyledBadge>
 							</Card.Body>
 						</ProfileCard>
-						<Button variant="outline-danger mt-auto" onClick={signOut}>
+						<Button
+							size="sm"
+							variant="outline-danger mt-auto"
+							onClick={signOut}
+						>
 							Keluar
 						</Button>
 					</Tab>
