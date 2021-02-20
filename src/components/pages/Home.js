@@ -65,6 +65,9 @@ const StyledCardFooter = styled(Card.Footer)`
 	background: white;
 	font-size: 12px;
 	padding: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 `;
 const StyledTabs = styled(Tabs)`
 	.nav-item {
@@ -145,26 +148,24 @@ const LoginView = () => {
 		</>
 	);
 };
-const MenteeView = ({ updateProfile, currentUser, signOut }) => {
+const MenteeView = ({ currentUser, signOut }) => {
 	const [key, setKey] = useState("semua_tugas");
 
 	const { name, level, creds } = currentUser;
-	const [localQ, setLocalQ] = useState([]);
 
 	const authContext = useContext(AuthContext);
 	const { getQuestions, questions } = authContext;
 	const [loading, setLoading] = useState(true);
+	const [ansQ, setAnsQ] = useState([]);
 
 	useEffect(() => {
 		getQuestions(currentUser);
 		setLoading(false);
-		getDate(1613723412);
 	}, []);
 
-	const getDate = (d) => {
-		console.log(new Date(d * 1000));
-		return new Date(d * 1000);
-	};
+	useEffect(() => {
+		setAnsQ(questions.filter((q) => q.answers && q.answers.length > 0));
+	}, [questions]);
 
 	return (
 		<Row>
@@ -197,12 +198,61 @@ const MenteeView = ({ updateProfile, currentUser, signOut }) => {
 									</Card.Body>
 									<StyledCardFooter className="text-muted">
 										{timeDifference(Date.now(), new Date(q.time * 1000))}
+										<div>
+											{q.status === "open" ? (
+												<Button variant="outline-secondary" onClick={() => {}}>
+													🔒
+												</Button>
+											) : (
+												"Tugas telah dititup"
+											)}
+										</div>
 									</StyledCardFooter>
 								</QuestionCard>
 							))
 						)}
 					</Tab>
-					<Tab eventKey="tugas_dijawab" title="Tugas Dijawab"></Tab>
+					<Tab eventKey="tugas_dijawab" title="Tugas Dijawab">
+						{loading ? (
+							<p>Mengambil semua tugas...</p>
+						) : (
+							ansQ.map((q, ix) => (
+								<QuestionCard key={ix} shadowColor={mapel[q.mapel].color}>
+									<Card.Body>
+										<CaptionSharp>
+											<b>{q.question}</b>
+										</CaptionSharp>
+
+										<StyledBadge
+											style={{
+												backgroundColor: `${mapel[q.mapel].color}`,
+												color: "#fff",
+											}}
+										>
+											{mapel[q.mapel].actualName}
+										</StyledBadge>
+										<StyledCaptionSharp className="mt-1">
+											{q.answers
+												? `Lihat ${q.answers.length} jawaban`
+												: "Belum ada jawaban"}
+										</StyledCaptionSharp>
+									</Card.Body>
+									<StyledCardFooter className="text-muted">
+										{timeDifference(Date.now(), new Date(q.time * 1000))}
+										<div>
+											{q.status === "open" ? (
+												<Button variant="outline-secondary" onClick={() => {}}>
+													🔒
+												</Button>
+											) : (
+												"Tugas telah dititup"
+											)}
+										</div>
+									</StyledCardFooter>
+								</QuestionCard>
+							))
+						)}
+					</Tab>
 					<Tab eventKey="profile" title="Profil">
 						<ProfileCard>
 							<Card.Body>
