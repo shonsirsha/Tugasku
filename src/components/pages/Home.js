@@ -410,20 +410,26 @@ const QuestionAnswerModal = (props) => {
 	const authContext = useContext(AuthContext);
 
 	const { createQuestion, currentUser } = authContext;
+	const [loading, setLoading] = useState(false);
 
 	const handleChange = (e) => {
 		stateSetter({ ...states, [e.target.name]: e.target.value });
 	};
 	const handleSubmit = async () => {
-		const time = Date.now();
-		await createQuestion({
-			...states,
-			menteeId: currentUser.id,
-			status: "open",
-			time,
-			answers: [],
-			questionId: `${states.mapel}-${time}`,
-		});
+		setLoading(true);
+		if (type === "question") {
+			const time = Date.now();
+			await createQuestion({
+				...states,
+				menteeId: currentUser.id,
+				status: "open",
+				time,
+				answers: [],
+				questionId: `${states.mapel}-${time}`,
+			});
+			stateSetter({ question: "", mapel: "" });
+		}
+		setLoading(false);
 		onHide();
 	};
 	return (
@@ -528,8 +534,8 @@ const QuestionAnswerModal = (props) => {
 			</Modal.Body>
 			<Modal.Footer>
 				{states.question.length > 0 && states.mapel.length > 0 && (
-					<Button onClick={handleSubmit} variant="success">
-						Kirim
+					<Button onClick={handleSubmit} variant="success" disabled={loading}>
+						{loading ? "Membuat..." : "Buat"}
 					</Button>
 				)}
 			</Modal.Footer>
