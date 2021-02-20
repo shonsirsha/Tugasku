@@ -107,7 +107,7 @@ const MenteeSignUpForm = () => {
 					<Col>
 						<InputGroup className="mb-3">
 							<InputGroup.Prepend>
-								<InputGroup.Text id="basic-addon1">😊</InputGroup.Text>
+								<InputGroup.Text>😊</InputGroup.Text>
 							</InputGroup.Prepend>
 							<FormControl
 								placeholder="Nama Siswa (Harus Diisi)"
@@ -117,7 +117,7 @@ const MenteeSignUpForm = () => {
 						</InputGroup>
 						<InputGroup className="mb-3">
 							<InputGroup.Prepend>
-								<InputGroup.Text id="basic-addon1">🏫</InputGroup.Text>
+								<InputGroup.Text>🏫</InputGroup.Text>
 							</InputGroup.Prepend>
 							<FormControl
 								placeholder="Nama Sekolah"
@@ -173,6 +173,26 @@ const MenteeSignUpForm = () => {
 	);
 };
 const MentorSignUpForm = () => {
+	const [mentor, setMentor] = useState({
+		fullName: "",
+		creds: "",
+		mapel: [],
+	});
+	const { mapel, creds, fullName } = mentor;
+	const handleChange = (e) => {
+		setMentor({ ...mentor, [e.target.name]: e.target.value });
+	};
+	const handleCheckbox = (e) => {
+		let s = mapel;
+		// setMentor({...mentor, mapel: e.target.value})
+		if (e.target.checked) {
+			s.push(e.target.value);
+		} else {
+			const ix = s.indexOf(e.target.value);
+			s.splice(ix, 1);
+		}
+		setMentor({ ...mentor, mapel: s });
+	};
 	return (
 		<>
 			<Row>
@@ -187,30 +207,50 @@ const MentorSignUpForm = () => {
 				<Col>
 					<InputGroup className="mb-3">
 						<InputGroup.Prepend>
-							<InputGroup.Text id="basic-addon1">😊</InputGroup.Text>
+							<InputGroup.Text>😊</InputGroup.Text>
 						</InputGroup.Prepend>
-						<FormControl placeholder="Nama Lengkap (Harus Diisi)" />
+						<FormControl
+							placeholder="Nama Lengkap (Harus Diisi)"
+							onChange={handleChange}
+							name="fullName"
+						/>
 					</InputGroup>
 					<InputGroup className="mb-1">
 						<InputGroup.Prepend>
-							<InputGroup.Text id="basic-addon1">❓</InputGroup.Text>
+							<InputGroup.Text>❓</InputGroup.Text>
 						</InputGroup.Prepend>
-						<FormControl placeholder="Kredensial Anda" />
+						<FormControl
+							placeholder="Kredensial Anda"
+							name="creds"
+							onChange={handleChange}
+						/>
 					</InputGroup>
 					<Form.Text className="text-muted mb-3">
 						Contoh: Mahasiswa di Universitas X
 					</Form.Text>
 					<StyledHeadingSM>Mata Pelajaran:</StyledHeadingSM>
 
-					<Form.Group className="mt-2" controlId="formBasicCheckbox">
-						<Form.Check type="checkbox" label="Matematika" />
-						<Form.Check type="checkbox" label="IPA" />
-						<Form.Check type="checkbox" label="IPS" />
-						<Form.Check type="checkbox" label="PPKN" />
-						<Form.Check type="checkbox" label="Bahasa Indonesia" />
-						<Form.Check type="checkbox" label="Bahasa Inggris / Bahasa Asing" />
-						<Form.Check type="checkbox" label="Seni Budaya" />
-						<Form.Check type="checkbox" label="TIK" />
+					<Form.Group
+						onChange={handleCheckbox}
+						onclassName="mt-2"
+						controlId="formBasicCheckbox"
+					>
+						<Form.Check type="checkbox" label="Matematika" value="mtk" />
+						<Form.Check type="checkbox" label="IPA" value="ipa" />
+						<Form.Check type="checkbox" label="IPS" value="ips" />
+						<Form.Check type="checkbox" label="PPKN" value="pkn" />
+						<Form.Check
+							type="checkbox"
+							label="Bahasa Indonesia"
+							value="bindo"
+						/>
+						<Form.Check
+							type="checkbox"
+							label="Bahasa Inggris / Bahasa Asing"
+							value="asing"
+						/>
+						<Form.Check type="checkbox" label="Seni Budaya" value="sbk" />
+						<Form.Check type="checkbox" label="TIK" value="tik" />
 					</Form.Group>
 				</Col>
 			</Row>
@@ -222,17 +262,21 @@ const MentorSignUpForm = () => {
 						<ProfileCard>
 							<Card.Body>
 								<CaptionSharp>
-									<b>Sean Saoírse Leo Liesanggoro</b>
+									{fullName.length > 0 ? <b>{fullName}</b> : "Nama Kamu Disini"}
 								</CaptionSharp>
-								<CaptionSharp>Software Engineer at Snapchat</CaptionSharp>
+								<CaptionSharp>{creds}</CaptionSharp>
 
 								<StyledBadge variant="primary">MENTOR 🎖️</StyledBadge>
 							</Card.Body>
 						</ProfileCard>
-						<CaptionSharp className="mb-2">Profilmu sudah oke?</CaptionSharp>
+						{fullName.length > 0 && mapel.length > 0 && (
+							<CaptionSharp className="mb-2">Profilmu sudah oke?</CaptionSharp>
+						)}
 					</Col>
 				</Row>
-				<Button variant="outline-success">Lanjutkan</Button>
+				{fullName.length > 0 && mapel.length > 0 && (
+					<Button variant="outline-success">Lanjutkan</Button>
+				)}
 			</ResultContainer>
 		</>
 	);
