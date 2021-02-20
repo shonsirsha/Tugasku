@@ -29,6 +29,7 @@ const StyledHeadingMD = styled(HeadingMD)`
 const StyledBadge = styled(Badge)`
 	margin-top: 16px;
 `;
+
 const StyledRow = styled(Row)`
 	margin-top: 0px;
 	margin-bottom: 24px;
@@ -178,11 +179,10 @@ const LoginView = () => {
 	);
 };
 const AnswerModal = (props) => {
-	const { show, onHide, answermodaldetail } = props;
-	const [allAnswers, setAllAnswers] = useState([]);
+	const { answermodaldetail } = props;
 	const settings = {
 		dots: true,
-		infinite: true,
+		infinite: false,
 		speed: 500,
 		slidesToShow: 1,
 		slidesToScroll: 1,
@@ -204,8 +204,14 @@ const AnswerModal = (props) => {
 										<CaptionSharp>
 											<b>{x.answer}</b>
 										</CaptionSharp>
-										<CaptionSharp>Test</CaptionSharp>
-										<StyledBadge variant="success">Mentor</StyledBadge>
+										<hr style={{ marginTop: "8px", marginBottom: "4px" }} />
+										<Badge variant="primary">MENTOR 🎖️</Badge>
+										<CaptionSharp className="mt-1" style={{ fontSize: "13px" }}>
+											<b>Jean Claude VanDamme</b>
+										</CaptionSharp>
+										<CaptionSharp style={{ fontSize: "13px" }}>
+											Software Engineer at Google
+										</CaptionSharp>
 									</Card.Body>
 								</ProfileCard>
 							</>
@@ -385,7 +391,9 @@ const MenteeView = ({ currentUser, signOut }) => {
 									<b>{name ? name : "Nama Kamu Disini"}</b>
 								</CaptionSharp>
 								<CaptionSharp>{creds}</CaptionSharp>
-								<StyledBadge variant="success">{level}</StyledBadge>
+								<StyledBadge variant="success" style={{ marginTop: "4px;" }}>
+									{level}
+								</StyledBadge>
 							</Card.Body>
 						</ProfileCard>
 						<Button variant="outline-danger mt-auto" onClick={signOut}>
