@@ -300,7 +300,7 @@ const Question = ({
 						`Telah dijawab oleh ${question.answers.length} mentor`} */}
 					{question.answers.length > 0
 						? userType === 10
-							? `Lihat ${question.answers.length} jawaban`
+							? `Lihat ${question.answers.length} jawaban (tap untuk melihat)`
 							: `Telah dijawab oleh ${question.answers.length} mentor`
 						: "Belum ada jawaban"}
 				</StyledCaptionSharp>
