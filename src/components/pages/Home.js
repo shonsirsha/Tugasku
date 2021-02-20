@@ -151,9 +151,33 @@ const LoginView = () => {
 		</>
 	);
 };
-const Question = ({ question, ix, closeQuestion }) => {
+const AnswerModal = (props) => {
+	const { show, onHide } = props;
+
 	return (
-		<QuestionCard key={ix} shadowcolor={mapel[question.mapel].color}>
+		<Modal {...props} size="lg" centered>
+			<Modal.Header closeButton>
+				<Modal.Title>Modal heading</Modal.Title>
+			</Modal.Header>
+			<Modal.Body>asd</Modal.Body>
+			<Modal.Footer>
+				<Button onClick={props.onHide}>Close</Button>
+			</Modal.Footer>
+		</Modal>
+	);
+};
+const Question = ({ question, ix, closeQuestion, setShowModal }) => {
+	const handleClick = () => {
+		if (question.answers.length > 0) {
+			setShowModal(true);
+		}
+	};
+	return (
+		<QuestionCard
+			onClick={handleClick}
+			key={ix}
+			shadowcolor={mapel[question.mapel].color}
+		>
 			<Card.Body>
 				<CaptionSharp>
 					<b>{question.question}</b>
@@ -196,6 +220,8 @@ const Question = ({ question, ix, closeQuestion }) => {
 const MenteeView = ({ currentUser, signOut }) => {
 	const [key, setKey] = useState("semua_tugas");
 	const [showNewQModal, setShowNewQModal] = useState(false);
+	const [showAnswerModal, setShowAnswerModal] = useState(false);
+
 	const { name, level, creds } = currentUser;
 
 	const authContext = useContext(AuthContext);
@@ -226,6 +252,10 @@ const MenteeView = ({ currentUser, signOut }) => {
 				type={"question"}
 				stateSetter={setQuestion}
 				states={question}
+			/>
+			<AnswerModal
+				show={showAnswerModal}
+				onHide={() => setShowAnswerModal(false)}
 			/>
 			<Col>
 				<StyledTabs activeKey={key} onSelect={(k) => setKey(k)}>
@@ -259,6 +289,7 @@ const MenteeView = ({ currentUser, signOut }) => {
 										question={q}
 										ix={ix}
 										key={ix}
+										setShowModal={setShowAnswerModal}
 									/>
 								))
 						)}
@@ -273,6 +304,7 @@ const MenteeView = ({ currentUser, signOut }) => {
 									question={q}
 									ix={ix}
 									key={ix}
+									setShowModal={setShowAnswerModal}
 								/>
 							))
 						) : (
@@ -437,6 +469,7 @@ const QuestionAnswerModal = (props) => {
 		</Modal>
 	);
 };
+
 const Home = () => {
 	const authContext = useContext(AuthContext);
 	const { currentUser, authLoading, updateProfile, signOut } = authContext;
