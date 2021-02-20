@@ -178,6 +178,8 @@ const MentorSignUpForm = () => {
 		creds: "",
 		mapel: [],
 	});
+	const authContext = useContext(AuthContext);
+	const { updateProfile, currentUser } = authContext;
 	const { mapel, creds, fullName } = mentor;
 	const handleChange = (e) => {
 		setMentor({ ...mentor, [e.target.name]: e.target.value });
@@ -193,6 +195,17 @@ const MentorSignUpForm = () => {
 		}
 		setMentor({ ...mentor, mapel: s });
 	};
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		await updateProfile({
+			id: currentUser.id,
+			name: fullName,
+			creds,
+			level: -1,
+			userType: 20,
+			mapel,
+		});
+	};
 	return (
 		<>
 			<Row>
@@ -203,81 +216,91 @@ const MentorSignUpForm = () => {
 					</ProfileTypeContainer>
 				</Col>
 			</Row>
-			<Row>
-				<Col>
-					<InputGroup className="mb-3">
-						<InputGroup.Prepend>
-							<InputGroup.Text>😊</InputGroup.Text>
-						</InputGroup.Prepend>
-						<FormControl
-							placeholder="Nama Lengkap (Harus Diisi)"
-							onChange={handleChange}
-							name="fullName"
-						/>
-					</InputGroup>
-					<InputGroup className="mb-1">
-						<InputGroup.Prepend>
-							<InputGroup.Text>❓</InputGroup.Text>
-						</InputGroup.Prepend>
-						<FormControl
-							placeholder="Kredensial Anda"
-							name="creds"
-							onChange={handleChange}
-						/>
-					</InputGroup>
-					<Form.Text className="text-muted mb-3">
-						Contoh: Mahasiswa di Universitas X
-					</Form.Text>
-					<StyledHeadingSM>Mata Pelajaran:</StyledHeadingSM>
-
-					<Form.Group
-						onChange={handleCheckbox}
-						onclassName="mt-2"
-						controlId="formBasicCheckbox"
-					>
-						<Form.Check type="checkbox" label="Matematika" value="mtk" />
-						<Form.Check type="checkbox" label="IPA" value="ipa" />
-						<Form.Check type="checkbox" label="IPS" value="ips" />
-						<Form.Check type="checkbox" label="PPKN" value="pkn" />
-						<Form.Check
-							type="checkbox"
-							label="Bahasa Indonesia"
-							value="bindo"
-						/>
-						<Form.Check
-							type="checkbox"
-							label="Bahasa Inggris / Bahasa Asing"
-							value="asing"
-						/>
-						<Form.Check type="checkbox" label="Seni Budaya" value="sbk" />
-						<Form.Check type="checkbox" label="TIK" value="tik" />
-					</Form.Group>
-				</Col>
-			</Row>
-			<ResultContainer>
+			<Form onSubmit={handleSubmit}>
 				<Row>
 					<Col>
-						<CaptionSharp className="mb-2">Pratinjau Profil</CaptionSharp>
+						<InputGroup className="mb-3">
+							<InputGroup.Prepend>
+								<InputGroup.Text>😊</InputGroup.Text>
+							</InputGroup.Prepend>
+							<FormControl
+								placeholder="Nama Lengkap (Harus Diisi)"
+								onChange={handleChange}
+								name="fullName"
+							/>
+						</InputGroup>
+						<InputGroup className="mb-1">
+							<InputGroup.Prepend>
+								<InputGroup.Text>❓</InputGroup.Text>
+							</InputGroup.Prepend>
+							<FormControl
+								placeholder="Kredensial Anda"
+								name="creds"
+								onChange={handleChange}
+							/>
+						</InputGroup>
+						<Form.Text className="text-muted mb-3">
+							Contoh: Mahasiswa di Universitas X
+						</Form.Text>
+						<StyledHeadingSM>Mata Pelajaran:</StyledHeadingSM>
 
-						<ProfileCard>
-							<Card.Body>
-								<CaptionSharp>
-									{fullName.length > 0 ? <b>{fullName}</b> : "Nama Kamu Disini"}
-								</CaptionSharp>
-								<CaptionSharp>{creds}</CaptionSharp>
-
-								<StyledBadge variant="primary">MENTOR 🎖️</StyledBadge>
-							</Card.Body>
-						</ProfileCard>
-						{fullName.length > 0 && mapel.length > 0 && (
-							<CaptionSharp className="mb-2">Profilmu sudah oke?</CaptionSharp>
-						)}
+						<Form.Group
+							onChange={handleCheckbox}
+							className="mt-2"
+							controlId="formBasicCheckbox"
+						>
+							<Form.Check type="checkbox" label="Matematika" value="mtk" />
+							<Form.Check type="checkbox" label="IPA" value="ipa" />
+							<Form.Check type="checkbox" label="IPS" value="ips" />
+							<Form.Check type="checkbox" label="PPKN" value="pkn" />
+							<Form.Check
+								type="checkbox"
+								label="Bahasa Indonesia"
+								value="bindo"
+							/>
+							<Form.Check
+								type="checkbox"
+								label="Bahasa Inggris / Bahasa Asing"
+								value="asing"
+							/>
+							<Form.Check type="checkbox" label="Seni Budaya" value="sbk" />
+							<Form.Check type="checkbox" label="TIK" value="tik" />
+						</Form.Group>
 					</Col>
 				</Row>
-				{fullName.length > 0 && mapel.length > 0 && (
-					<Button variant="outline-success">Lanjutkan</Button>
-				)}
-			</ResultContainer>
+				<ResultContainer>
+					<Row>
+						<Col>
+							<CaptionSharp className="mb-2">Pratinjau Profil</CaptionSharp>
+
+							<ProfileCard>
+								<Card.Body>
+									<CaptionSharp>
+										{fullName.length > 0 ? (
+											<b>{fullName}</b>
+										) : (
+											"Nama Kamu Disini"
+										)}
+									</CaptionSharp>
+									<CaptionSharp>{creds}</CaptionSharp>
+
+									<StyledBadge variant="primary">MENTOR 🎖️</StyledBadge>
+								</Card.Body>
+							</ProfileCard>
+							{fullName.length > 0 && mapel.length > 0 && (
+								<CaptionSharp className="mb-2">
+									Profilmu sudah oke?
+								</CaptionSharp>
+							)}
+						</Col>
+					</Row>
+					{fullName.length > 0 && mapel.length > 0 && (
+						<Button type="submit" variant="outline-success">
+							Lanjutkan
+						</Button>
+					)}
+				</ResultContainer>
+			</Form>
 		</>
 	);
 };

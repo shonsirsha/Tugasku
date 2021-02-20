@@ -111,13 +111,14 @@ const AuthState = (props) => {
 	};
 	const updateProfile = async (userObject) => {
 		startLoading();
-		const { creds, level, id, name, userType } = userObject;
+		const { creds, level, id, name, userType, mapel } = userObject;
 		try {
 			await db.collection("users").doc(id).update({
 				creds,
 				level,
 				name,
 				userType,
+				mapel,
 			});
 			dispatch({
 				type: USER_AUTH,
@@ -152,6 +153,36 @@ const AuthState = (props) => {
 						console.log(`Encountered error: ${err}`);
 					}
 				);
+			} catch (err) {
+				console.log(err);
+				console.log("error getting all questions");
+			}
+		} else {
+			// mentor
+			try {
+				let preferredMapel = currentUser.mapel;
+
+				const allTugas = db
+					.collection("tugas")
+					.where("mapel", "in", preferredMapel);
+				allTugas.onSnapshot(
+					(querySnapshot) => {
+						let qArray = [];
+
+						querySnapshot.forEach((x) => {
+							qArray.push({ ...x.data(), tugasId: x.id });
+						});
+						dispatch({
+							type: GET_ALL_QUESTIONS,
+							payload: { questions: qArray },
+						});
+					},
+					(err) => {
+						console.log(`Encountered error: ${err}`);
+					}
+				);
+
+				console.log(preferredMapel);
 			} catch (err) {
 				console.log(err);
 				console.log("error getting all questions");

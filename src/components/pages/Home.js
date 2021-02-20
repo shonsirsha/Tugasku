@@ -282,7 +282,7 @@ const MenteeView = ({ currentUser, signOut }) => {
 		answers: [],
 	});
 
-	const { name, level, creds } = currentUser;
+	const { name, level, creds, userType } = currentUser;
 
 	const authContext = useContext(AuthContext);
 	const { getQuestions, questions, closeQuestion } = authContext;
@@ -323,39 +323,61 @@ const MenteeView = ({ currentUser, signOut }) => {
 			<Col>
 				<StyledTabs activeKey={key} onSelect={(k) => setKey(k)}>
 					<Tab eventKey="semua_tugas" title="Semua Tugas">
-						<p style={{ fontSize: "13px", marginBottom: "4px" }}>
-							📝 &nbsp;<b>{currentUser.name.split(" ")[0]}</b>, semua tugasmu
-							ada disini.
-						</p>
-						<p style={{ fontSize: "13px", marginBottom: "0" }}>
-							🔒 <b>Tutup tugas</b>: tugas yang telah ditutup tidak akan muncul
-							di halaman Mentor.
-						</p>
-						<Button
-							className={"my-4"}
-							variant="outline-secondary"
-							onClick={() => {
-								setShowNewQModal(true);
-							}}
-							style={{ width: "100%" }}
-						>
-							📝 &nbsp; Buat Tugas Baru
-						</Button>
+						{userType === 10 ? (
+							<p style={{ fontSize: "13px", marginBottom: "4px" }}>
+								📝 &nbsp;<b>{currentUser.name.split(" ")[0]}</b>, semua tugasmu
+								ada disini.
+							</p>
+						) : (
+							<p style={{ fontSize: "13px", marginBottom: "4px" }}>
+								📝 &nbsp;<b>{currentUser.name.split(" ")[0]}</b>, semua tugas
+								yang sesuai dengan prefrensi mata pelajaranmu ada disini
+							</p>
+						)}
+
+						{userType === 10 && (
+							<p style={{ fontSize: "13px", marginBottom: "0" }}>
+								🔒 <b>Tutup tugas</b>: tugas yang telah ditutup tidak akan
+								muncul di halaman Mentor.
+							</p>
+						)}
+
+						{userType === 10 && (
+							<Button
+								className={"my-4"}
+								variant="outline-secondary"
+								onClick={() => {
+									setShowNewQModal(true);
+								}}
+								style={{ width: "100%" }}
+							>
+								📝 &nbsp; Buat Tugas Baru
+							</Button>
+						)}
+
+						{!loading && userType === 20 && questions.length < 1 && (
+							<p style={{ textAlign: "center", marginTop: "80px" }}>
+								<b>Tidak ada tugas</b>
+							</p>
+						)}
+
 						{loading ? (
 							<p>Mengambil semua tugas...</p>
 						) : (
-							questions
-								.sort((a, b) => b.time - a.time)
-								.map((q, ix) => (
-									<Question
-										closeQuestion={closeQuestion}
-										question={q}
-										ix={ix}
-										key={ix}
-										setAnswerModalDetail={setAnswerModalDetail}
-										answerModalDetail={answerModalDetail}
-									/>
-								))
+							<div className={`${userType === 20 && `mt-4`}`}>
+								{questions
+									.sort((a, b) => b.time - a.time)
+									.map((q, ix) => (
+										<Question
+											closeQuestion={closeQuestion}
+											question={q}
+											ix={ix}
+											key={ix}
+											setAnswerModalDetail={setAnswerModalDetail}
+											answerModalDetail={answerModalDetail}
+										/>
+									))}
+							</div>
 						)}
 					</Tab>
 					<Tab eventKey="tugas_dijawab" title="Tugas Dijawab">
@@ -380,7 +402,7 @@ const MenteeView = ({ currentUser, signOut }) => {
 									textAlign: "center",
 								}}
 							>
-								😬 &nbsp; Belum ada tugas yang dijawab...
+								Belum ada tugas yang dijawab
 							</p>
 						)}
 					</Tab>
@@ -568,7 +590,13 @@ const Home = () => {
 							/>
 						);
 					} else {
-						// setRendered(<Mentor />);
+						setRendered(
+							<MenteeView
+								updateProfile={updateProfile}
+								currentUser={currentUser}
+								signOut={signOut}
+							/>
+						);
 					}
 				}
 			}
