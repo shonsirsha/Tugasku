@@ -51,6 +51,9 @@ const ProfileCard = styled(Card)`
 	}
 `;
 const QuestionCard = styled(Card)`
+	&:hover {
+		cursor: pointer;
+	}
 	padding: 4px;
 	margin-bottom: 16px;
 	padding-bottom: 0px;
