@@ -118,13 +118,23 @@ const AuthState = (props) => {
 		startLoading();
 		const { creds, level, id, name, userType, mapel } = userObject;
 		try {
-			await db.collection("users").doc(id).update({
-				creds,
-				level,
-				name,
-				userType,
-				mapel,
-			});
+			if (userType === 10) {
+				await db.collection("users").doc(id).update({
+					creds,
+					level,
+					name,
+					userType,
+				});
+			} else {
+				await db.collection("users").doc(id).update({
+					creds,
+					level,
+					name,
+					userType,
+					mapel,
+				});
+			}
+
 			dispatch({
 				type: USER_AUTH,
 				payload: { currentUser: userObject },

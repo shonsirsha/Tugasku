@@ -530,12 +530,14 @@ const MenteeView = ({ currentUser, signOut }) => {
 									<b>{name ? name : "Nama Kamu Disini"}</b>
 								</CaptionSharp>
 								<CaptionSharp>{creds}</CaptionSharp>
-								<div style={{ display: "flex", flexDirection: "column" }}>
+								<div
+									style={{
+										display: `${userType === 20 ? `flex` : `block`}`,
+										flexDirection: "column",
+									}}
+								>
 									{userType === 10 ? (
-										<StyledBadge
-											variant="success"
-											style={{ marginTop: "8px", maxWidth: "270px" }}
-										>
+										<StyledBadge variant="success" style={{ marginTop: "8px" }}>
 											{level}
 										</StyledBadge>
 									) : (
