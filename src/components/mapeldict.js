@@ -32,3 +32,5 @@ const mapel = {
 		color: "#fb271f",
 	},
 };
+
+export default mapel;

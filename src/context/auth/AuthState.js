@@ -141,7 +141,7 @@ const AuthState = (props) => {
 						let qArray = [];
 
 						querySnapshot.forEach((x) => {
-							qArray.push(x.data());
+							qArray.push({ ...x.data(), mapel: x.id });
 						});
 						dispatch({
 							type: GET_ALL_QUESTIONS,

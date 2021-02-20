@@ -17,7 +17,8 @@ import { CaptionSharp } from "../Typography/Caption";
 
 import styled from "styled-components";
 import AuthContext from "../../context/auth/authContext";
-
+import mapel from "../mapeldict";
+import { timeDifference } from "../../utils/timeDifference";
 const StyledHeadingMD = styled(HeadingMD)`
 	font-size: 16px;
 `;
@@ -41,6 +42,29 @@ const ProfileCard = styled(Card)`
 	.card-body {
 		padding: 8px;
 	}
+`;
+const QuestionCard = styled(Card)`
+	padding: 4px;
+	margin-bottom: 16px;
+	padding-bottom: 0px;
+	border: none;
+	border-radius: 4px;
+
+	.card-body {
+		padding: 10px;
+	}
+	-webkit-box-shadow: -1px 2px 20px -3px ${(props) => props.shadowColor}3F;
+	-moz-box-shadow: -1px 2px 20px -3px ${(props) => props.shadowColor}3F;
+	box-shadow: -1px 2px 20px -3px ${(props) => props.shadowColor}3F;
+`;
+const StyledCaptionSharp = styled(CaptionSharp)`
+	font-weight: 500;
+	font-size: 14px;
+`;
+const StyledCardFooter = styled(Card.Footer)`
+	background: white;
+	font-size: 12px;
+	padding: 10px;
 `;
 const StyledTabs = styled(Tabs)`
 	.nav-item {
@@ -134,7 +158,13 @@ const MenteeView = ({ updateProfile, currentUser, signOut }) => {
 	useEffect(() => {
 		getQuestions(currentUser);
 		setLoading(false);
+		getDate(1613723412);
 	}, []);
+
+	const getDate = (d) => {
+		console.log(new Date(d * 1000));
+		return new Date(d * 1000);
+	};
 
 	return (
 		<Row>
@@ -144,7 +174,32 @@ const MenteeView = ({ updateProfile, currentUser, signOut }) => {
 						{loading ? (
 							<p>Mengambil semua tugas...</p>
 						) : (
-							questions.map((q) => <div>{q.question}</div>)
+							questions.map((q, ix) => (
+								<QuestionCard key={ix} shadowColor={mapel[q.mapel].color}>
+									<Card.Body>
+										<CaptionSharp>
+											<b>{q.question}</b>
+										</CaptionSharp>
+
+										<StyledBadge
+											style={{
+												backgroundColor: `${mapel[q.mapel].color}`,
+												color: "#fff",
+											}}
+										>
+											{mapel[q.mapel].actualName}
+										</StyledBadge>
+										<StyledCaptionSharp className="mt-1">
+											{q.answers
+												? `Lihat ${q.answers.length} jawaban`
+												: "Belum ada jawaban"}
+										</StyledCaptionSharp>
+									</Card.Body>
+									<StyledCardFooter className="text-muted">
+										{timeDifference(Date.now(), new Date(q.time * 1000))}
+									</StyledCardFooter>
+								</QuestionCard>
+							))
 						)}
 					</Tab>
 					<Tab eventKey="tugas_dijawab" title="Tugas Dijawab"></Tab>
