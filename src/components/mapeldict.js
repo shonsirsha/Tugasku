@@ -19,15 +19,15 @@ const mapel = {
 		actualName: "Seni Budaya",
 		color: "#65395a",
 	},
-	TIK: {
+	tik: {
 		actualName: "TIK",
 		color: "#9c2376",
 	},
-	IPA: {
+	ipa: {
 		actualName: "IPA",
 		color: "#d56340",
 	},
-	IPS: {
+	ips: {
 		actualName: "IPS",
 		color: "#fb271f",
 	},

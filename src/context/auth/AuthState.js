@@ -141,7 +141,7 @@ const AuthState = (props) => {
 						let qArray = [];
 
 						querySnapshot.forEach((x) => {
-							qArray.push({ ...x.data(), mapel: x.id });
+							qArray.push({ ...x.data(), tugasId: x.id });
 						});
 						dispatch({
 							type: GET_ALL_QUESTIONS,
@@ -156,6 +156,16 @@ const AuthState = (props) => {
 				console.log(err);
 				console.log("error getting all questions");
 			}
+		}
+	};
+	const closeQuestion = async (tugasId) => {
+		try {
+			await db.collection("tugas").doc(tugasId).update({
+				status: "closed",
+			});
+		} catch (e) {
+			console.log("error closing question");
+			console.log(e);
 		}
 	};
 	const signOut = async () => {
@@ -193,6 +203,7 @@ const AuthState = (props) => {
 				updateProfile,
 				signOut,
 				getQuestions,
+				closeQuestion,
 			}}
 		>
 			{props.children}

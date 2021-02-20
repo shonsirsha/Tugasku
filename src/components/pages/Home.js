@@ -53,9 +53,9 @@ const QuestionCard = styled(Card)`
 	.card-body {
 		padding: 10px;
 	}
-	-webkit-box-shadow: -1px 2px 20px -3px ${(props) => props.shadowColor}3F;
-	-moz-box-shadow: -1px 2px 20px -3px ${(props) => props.shadowColor}3F;
-	box-shadow: -1px 2px 20px -3px ${(props) => props.shadowColor}3F;
+	-webkit-box-shadow: -1px 2px 20px -3px ${(props) => props.shadowcolor}3F;
+	-moz-box-shadow: -1px 2px 20px -3px ${(props) => props.shadowcolor}3F;
+	box-shadow: -1px 2px 20px -3px ${(props) => props.shadowcolor}3F;
 `;
 const StyledCaptionSharp = styled(CaptionSharp)`
 	font-weight: 500;
@@ -148,9 +148,9 @@ const LoginView = () => {
 		</>
 	);
 };
-const Question = ({ question, key }) => {
+const Question = ({ question, ix, closeQuestion }) => {
 	return (
-		<QuestionCard key={key} shadowColor={mapel[question.mapel].color}>
+		<QuestionCard key={ix} shadowcolor={mapel[question.mapel].color}>
 			<Card.Body>
 				<CaptionSharp>
 					<b>{question.question}</b>
@@ -174,7 +174,12 @@ const Question = ({ question, key }) => {
 				{timeDifference(Date.now(), new Date(question.time * 1000))}
 				<div>
 					{question.status === "open" ? (
-						<Button variant="outline-secondary" onClick={() => {}}>
+						<Button
+							variant="outline-secondary"
+							onClick={() => {
+								closeQuestion(question.tugasId);
+							}}
+						>
 							🔒
 						</Button>
 					) : (
@@ -191,7 +196,7 @@ const MenteeView = ({ currentUser, signOut }) => {
 	const { name, level, creds } = currentUser;
 
 	const authContext = useContext(AuthContext);
-	const { getQuestions, questions } = authContext;
+	const { getQuestions, questions, closeQuestion } = authContext;
 	const [loading, setLoading] = useState(true);
 	const [ansQ, setAnsQ] = useState([]);
 
@@ -209,17 +214,40 @@ const MenteeView = ({ currentUser, signOut }) => {
 			<Col>
 				<StyledTabs activeKey={key} onSelect={(k) => setKey(k)}>
 					<Tab eventKey="semua_tugas" title="Semua Tugas">
+						<p style={{ fontSize: "13px", marginBottom: "4px" }}>
+							📝 &nbsp;<b>{currentUser.name.split(" ")[0]}</b>, semua tugasmu
+							ada disini.
+						</p>
+						<p style={{ fontSize: "13px" }}>
+							🔒 <b>Tutup tugas</b>: tugas yang telah ditutup tidak akan muncul
+							di halaman Mentor.
+						</p>
+
 						{loading ? (
 							<p>Mengambil semua tugas...</p>
 						) : (
-							questions.map((q, ix) => <Question question={q} key={ix} />)
+							questions.map((q, ix) => (
+								<Question
+									closeQuestion={closeQuestion}
+									question={q}
+									ix={ix}
+									key={ix}
+								/>
+							))
 						)}
 					</Tab>
 					<Tab eventKey="tugas_dijawab" title="Tugas Dijawab">
 						{loading ? (
 							<p>Mengambil semua tugas...</p>
 						) : (
-							ansQ.map((q, ix) => <Question question={q} key={ix} />)
+							ansQ.map((q, ix) => (
+								<Question
+									closeQuestion={closeQuestion}
+									question={q}
+									ix={ix}
+									key={ix}
+								/>
+							))
 						)}
 					</Tab>
 					<Tab eventKey="profile" title="Profil">
