@@ -366,6 +366,8 @@ const MenteeView = ({ currentUser, signOut }) => {
 	const [loading, setLoading] = useState(true);
 	const [ansQ, setAnsQ] = useState([]);
 
+	const [noClosedQ, setNoClosedQ] = useState([]);
+
 	const [question, setQuestion] = useState({
 		question: "",
 		mapel: "",
@@ -391,6 +393,7 @@ const MenteeView = ({ currentUser, signOut }) => {
 			setAnsQ(
 				questions.filter((q) => q.answers && hasBeenAnsweredByMe(q.answers, id))
 			);
+			setNoClosedQ(questions.filter((q) => q.status === "open"));
 		}
 	}, [questions]);
 
@@ -475,23 +478,50 @@ const MenteeView = ({ currentUser, signOut }) => {
 							<p>Mengambil semua tugas...</p>
 						) : (
 							<div className={`${userType === 20 && `mt-2`}`}>
-								{questions
-									.sort((a, b) => b.time - a.time)
-									.map((q, ix) => (
-										<Question
-											closeQuestion={closeQuestion}
-											question={q}
-											ix={ix}
-											key={ix}
-											currentUser={currentUser}
-											setAnswerModalDetail={setAnswerModalDetail}
-											answerModalDetail={answerModalDetail}
-											setAnswerDetail={setAnswerDetail}
-											answerDetail={answerDetail}
-											setShowNewQModal={setShowNewQModal}
-											setModalType={setModalType}
-										/>
-									))}
+								<>
+									{userType === 10 ? (
+										<>
+											{questions
+												.sort((a, b) => b.time - a.time)
+												.map((q, ix) => (
+													<Question
+														closeQuestion={closeQuestion}
+														question={q}
+														ix={ix}
+														key={ix}
+														currentUser={currentUser}
+														setAnswerModalDetail={setAnswerModalDetail}
+														answerModalDetail={answerModalDetail}
+														setAnswerDetail={setAnswerDetail}
+														answerDetail={answerDetail}
+														setShowNewQModal={setShowNewQModal}
+														setModalType={setModalType}
+													/>
+												))}
+										</>
+									) : (
+										<>
+											{noClosedQ
+												.sort((a, b) => b.time - a.time)
+												.map((q, ix) => (
+													<Question
+														closeQuestion={closeQuestion}
+														question={q}
+														ix={ix}
+														key={ix}
+														currentUser={currentUser}
+														setAnswerModalDetail={setAnswerModalDetail}
+														answerModalDetail={answerModalDetail}
+														setAnswerDetail={setAnswerDetail}
+														answerDetail={answerDetail}
+														setShowNewQModal={setShowNewQModal}
+														setModalType={setModalType}
+													/>
+												))}
+										</>
+									)}
+								</>
+								{}
 							</div>
 						)}
 					</Tab>
@@ -499,21 +529,23 @@ const MenteeView = ({ currentUser, signOut }) => {
 						{loading ? (
 							<p>Mengambil semua tugas...</p>
 						) : ansQ.length > 0 ? (
-							ansQ.map((q, ix) => (
-								<Question
-									closeQuestion={closeQuestion}
-									question={q}
-									ix={ix}
-									key={ix}
-									currentUser={currentUser}
-									setAnswerModalDetail={setAnswerModalDetail}
-									answerModalDetail={answerModalDetail}
-									setAnswerDetail={setAnswerDetail}
-									answerDetail={answerDetail}
-									setShowNewQModal={setShowNewQModal}
-									setModalType={setModalType}
-								/>
-							))
+							ansQ
+								.sort((a, b) => b.time - a.time)
+								.map((q, ix) => (
+									<Question
+										closeQuestion={closeQuestion}
+										question={q}
+										ix={ix}
+										key={ix}
+										currentUser={currentUser}
+										setAnswerModalDetail={setAnswerModalDetail}
+										answerModalDetail={answerModalDetail}
+										setAnswerDetail={setAnswerDetail}
+										answerDetail={answerDetail}
+										setShowNewQModal={setShowNewQModal}
+										setModalType={setModalType}
+									/>
+								))
 						) : (
 							<p
 								style={{
