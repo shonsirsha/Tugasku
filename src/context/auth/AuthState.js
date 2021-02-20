@@ -130,7 +130,7 @@ const AuthState = (props) => {
 		}
 		stopLoading();
 	};
-	const getQuestions = (currentUser) => {
+	const getQuestions = async (currentUser) => {
 		const { id, userType } = currentUser;
 		if (userType === 10) {
 			// mentee
@@ -142,7 +142,24 @@ const AuthState = (props) => {
 						let qArray = [];
 
 						querySnapshot.forEach((x) => {
-							qArray.push({ ...x.data(), tugasId: x.id });
+							let allAnswersOfAQuestion = [];
+							x.data().answers.map(async (z) => {
+								let ansObj = {};
+								const mentorDetailQuerySnapshot = await db
+									.collection("users")
+									.where("id", "==", z.mentorId)
+									.get();
+								mentorDetailQuerySnapshot.forEach((doc) => {
+									// doc.data() is never undefined for query doc snapshots
+									ansObj = { ...z, mentorName: doc.data().name };
+								});
+								allAnswersOfAQuestion.push(ansObj);
+							});
+							qArray.push({
+								...x.data(),
+								tugasId: x.id,
+								answers: allAnswersOfAQuestion,
+							});
 						});
 						dispatch({
 							type: GET_ALL_QUESTIONS,

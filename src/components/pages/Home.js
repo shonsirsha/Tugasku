@@ -66,7 +66,7 @@ const QuestionCard = styled(Card)`
 `;
 const StyledCaptionSharp = styled(CaptionSharp)`
 	font-weight: 500;
-	font-size: 14px;
+	font-size: 13px;
 `;
 const StyledCardFooter = styled(Card.Footer)`
 	background: white;
@@ -223,7 +223,9 @@ const AnswerModal = (props) => {
 								</>
 							))}
 				</StyledSlider>
-				<CaptionSharp>Geser untuk melihat jawaban lainnya</CaptionSharp>
+				{answermodaldetail.answers && answermodaldetail.answers.length > 1 && (
+					<CaptionSharp>Geser untuk melihat jawaban lainnya</CaptionSharp>
+				)}
 			</Modal.Body>
 			<Modal.Footer style={{ minHeight: "65px" }}></Modal.Footer>
 		</Modal>
@@ -266,12 +268,12 @@ const Question = ({
 		setAnsweredByMe(hasBeenAnsweredByMe(question.answers, id));
 	}, [question]);
 	return (
-		<QuestionCard
-			onClick={handleClick}
-			key={ix}
-			shadowcolor={mapel[question.mapel].color}
-		>
-			<Card.Body>
+		<QuestionCard key={ix} shadowcolor={mapel[question.mapel].color}>
+			<Card.Body
+				onClick={() => {
+					handleClick();
+				}}
+			>
 				<CaptionSharp>
 					<b>{question.question}</b>
 				</CaptionSharp>
@@ -514,7 +516,10 @@ const MenteeView = ({ currentUser, signOut }) => {
 								<CaptionSharp>{creds}</CaptionSharp>
 								<div style={{ display: "flex", flexDirection: "column" }}>
 									{userType === 10 ? (
-										<StyledBadge variant="success" style={{ marginTop: "4px" }}>
+										<StyledBadge
+											variant="success"
+											style={{ marginTop: "8px", maxWidth: "270px" }}
+										>
 											{level}
 										</StyledBadge>
 									) : (
