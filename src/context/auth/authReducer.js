@@ -26,6 +26,7 @@ export default (state, action) => {
 			return {
 				...state,
 				currentUser: null,
+				questions: [],
 			};
 		case GET_ALL_QUESTIONS:
 			return {
