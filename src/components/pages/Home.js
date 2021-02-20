@@ -148,6 +148,43 @@ const LoginView = () => {
 		</>
 	);
 };
+const Question = ({ question, key }) => {
+	return (
+		<QuestionCard key={key} shadowColor={mapel[question.mapel].color}>
+			<Card.Body>
+				<CaptionSharp>
+					<b>{question.question}</b>
+				</CaptionSharp>
+
+				<StyledBadge
+					style={{
+						backgroundColor: `${mapel[question.mapel].color}`,
+						color: "#fff",
+					}}
+				>
+					{mapel[question.mapel].actualName}
+				</StyledBadge>
+				<StyledCaptionSharp className="mt-1">
+					{question.answers
+						? `Lihat ${question.answers.length} jawaban`
+						: "Belum ada jawaban"}
+				</StyledCaptionSharp>
+			</Card.Body>
+			<StyledCardFooter className="text-muted">
+				{timeDifference(Date.now(), new Date(question.time * 1000))}
+				<div>
+					{question.status === "open" ? (
+						<Button variant="outline-secondary" onClick={() => {}}>
+							🔒
+						</Button>
+					) : (
+						"Tugas telah dititup"
+					)}
+				</div>
+			</StyledCardFooter>
+		</QuestionCard>
+	);
+};
 const MenteeView = ({ currentUser, signOut }) => {
 	const [key, setKey] = useState("semua_tugas");
 
@@ -175,82 +212,14 @@ const MenteeView = ({ currentUser, signOut }) => {
 						{loading ? (
 							<p>Mengambil semua tugas...</p>
 						) : (
-							questions.map((q, ix) => (
-								<QuestionCard key={ix} shadowColor={mapel[q.mapel].color}>
-									<Card.Body>
-										<CaptionSharp>
-											<b>{q.question}</b>
-										</CaptionSharp>
-
-										<StyledBadge
-											style={{
-												backgroundColor: `${mapel[q.mapel].color}`,
-												color: "#fff",
-											}}
-										>
-											{mapel[q.mapel].actualName}
-										</StyledBadge>
-										<StyledCaptionSharp className="mt-1">
-											{q.answers
-												? `Lihat ${q.answers.length} jawaban`
-												: "Belum ada jawaban"}
-										</StyledCaptionSharp>
-									</Card.Body>
-									<StyledCardFooter className="text-muted">
-										{timeDifference(Date.now(), new Date(q.time * 1000))}
-										<div>
-											{q.status === "open" ? (
-												<Button variant="outline-secondary" onClick={() => {}}>
-													🔒
-												</Button>
-											) : (
-												"Tugas telah dititup"
-											)}
-										</div>
-									</StyledCardFooter>
-								</QuestionCard>
-							))
+							questions.map((q, ix) => <Question question={q} key={ix} />)
 						)}
 					</Tab>
 					<Tab eventKey="tugas_dijawab" title="Tugas Dijawab">
 						{loading ? (
 							<p>Mengambil semua tugas...</p>
 						) : (
-							ansQ.map((q, ix) => (
-								<QuestionCard key={ix} shadowColor={mapel[q.mapel].color}>
-									<Card.Body>
-										<CaptionSharp>
-											<b>{q.question}</b>
-										</CaptionSharp>
-
-										<StyledBadge
-											style={{
-												backgroundColor: `${mapel[q.mapel].color}`,
-												color: "#fff",
-											}}
-										>
-											{mapel[q.mapel].actualName}
-										</StyledBadge>
-										<StyledCaptionSharp className="mt-1">
-											{q.answers
-												? `Lihat ${q.answers.length} jawaban`
-												: "Belum ada jawaban"}
-										</StyledCaptionSharp>
-									</Card.Body>
-									<StyledCardFooter className="text-muted">
-										{timeDifference(Date.now(), new Date(q.time * 1000))}
-										<div>
-											{q.status === "open" ? (
-												<Button variant="outline-secondary" onClick={() => {}}>
-													🔒
-												</Button>
-											) : (
-												"Tugas telah dititup"
-											)}
-										</div>
-									</StyledCardFooter>
-								</QuestionCard>
-							))
+							ansQ.map((q, ix) => <Question question={q} key={ix} />)
 						)}
 					</Tab>
 					<Tab eventKey="profile" title="Profil">
