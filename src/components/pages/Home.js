@@ -339,7 +339,7 @@ const Question = ({
 						<>
 							{answeredByMe ? (
 								<StyledCaptionSharp className="mt-1 text-muted">
-									✅
+									✅ &nbsp; & &nbsp;🔒
 								</StyledCaptionSharp>
 							) : (
 								"Tugas telah ditutup"
@@ -393,7 +393,11 @@ const MenteeView = ({ currentUser, signOut }) => {
 			setAnsQ(
 				questions.filter((q) => q.answers && hasBeenAnsweredByMe(q.answers, id))
 			);
-			setNoClosedQ(questions.filter((q) => q.status === "open"));
+			setNoClosedQ(
+				questions.filter(
+					(q) => q.answers && !hasBeenAnsweredByMe(q.answers, id)
+				)
+			);
 		}
 	}, [questions]);
 
@@ -439,10 +443,8 @@ const MenteeView = ({ currentUser, signOut }) => {
 							<>
 								<p style={{ fontSize: "13px", marginBottom: "4px" }}>
 									📝 &nbsp;<b>{currentUser.name.split(" ")[0]}</b>, semua tugas
-									yang sesuai dengan prefrensi mata pelajaranmu ada disini
-								</p>
-								<p style={{ fontSize: "13px", marginBottom: "4px" }}>
-									✅ &nbsp; = Tugas yang telah kamu jawab
+									yang sesuai dengan prefrensi mata pelajaranmu dan belum
+									ditutup oleh mentee (penanya) ada disini
 								</p>
 							</>
 						)}
@@ -501,23 +503,40 @@ const MenteeView = ({ currentUser, signOut }) => {
 										</>
 									) : (
 										<>
-											{noClosedQ
-												.sort((a, b) => b.time - a.time)
-												.map((q, ix) => (
-													<Question
-														closeQuestion={closeQuestion}
-														question={q}
-														ix={ix}
-														key={ix}
-														currentUser={currentUser}
-														setAnswerModalDetail={setAnswerModalDetail}
-														answerModalDetail={answerModalDetail}
-														setAnswerDetail={setAnswerDetail}
-														answerDetail={answerDetail}
-														setShowNewQModal={setShowNewQModal}
-														setModalType={setModalType}
-													/>
-												))}
+											{noClosedQ.length > 0 ? (
+												<>
+													{noClosedQ
+														.sort((a, b) => b.time - a.time)
+														.map((q, ix) => (
+															<Question
+																closeQuestion={closeQuestion}
+																question={q}
+																ix={ix}
+																key={ix}
+																currentUser={currentUser}
+																setAnswerModalDetail={setAnswerModalDetail}
+																answerModalDetail={answerModalDetail}
+																setAnswerDetail={setAnswerDetail}
+																answerDetail={answerDetail}
+																setShowNewQModal={setShowNewQModal}
+																setModalType={setModalType}
+															/>
+														))}
+												</>
+											) : (
+												<Badge
+													variant={"success"}
+													style={{
+														marginLeft: "auto",
+														display: "block",
+														width: "fit-content",
+														marginRight: "auto",
+														marginTop: "80px",
+													}}
+												>
+													Tidak ada tugas 😊 ✨
+												</Badge>
+											)}
 										</>
 									)}
 								</>
@@ -526,6 +545,16 @@ const MenteeView = ({ currentUser, signOut }) => {
 						)}
 					</Tab>
 					<Tab eventKey="tugas_dijawab" title="Tugas Dijawab">
+						{userType === 20 && (
+							<>
+								<p style={{ fontSize: "13px", marginBottom: "4px" }}>
+									✅ &nbsp; = Tugas yang sudah kamu jawab
+								</p>
+								<p style={{ fontSize: "13px", marginBottom: "16px" }}>
+									🔒&nbsp;= Tugas sudah ditutup oleh penanya (mentee)
+								</p>
+							</>
+						)}
 						{loading ? (
 							<p>Mengambil semua tugas...</p>
 						) : ansQ.length > 0 ? (
