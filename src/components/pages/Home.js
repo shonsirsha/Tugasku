@@ -103,13 +103,17 @@ const StyledSlider = styled(Slider)`
 	.slick-next {
 		display: none !important;
 	}
+	.slick-slide {
+		padding-left: 4px;
+		padding-right: 8px;
+	}
 	.slick-dots {
-		bottom: -60px;
+		bottom: -80px;
 		li {
 			margin: 0;
 		}
 		li button:before {
-			font-size: 10px;
+			font-size: 12px;
 			opacity: 1;
 			color: #b7dccb;
 		}
@@ -175,6 +179,7 @@ const LoginView = () => {
 };
 const AnswerModal = (props) => {
 	const { show, onHide, answermodaldetail } = props;
+	const [allAnswers, setAllAnswers] = useState([]);
 	const settings = {
 		dots: true,
 		infinite: true,
@@ -190,16 +195,25 @@ const AnswerModal = (props) => {
 			</Modal.Header>
 			<Modal.Body>
 				<StyledSlider {...settings}>
-					{answermodaldetail.answers.map((x) => (
-						<div>{x.answer}</div>
-					))}
+					{answermodaldetail.answers
+						.sort((a, b) => b.time - a.time)
+						.map((x) => (
+							<>
+								<ProfileCard>
+									<Card.Body>
+										<CaptionSharp>
+											<b>{x.answer}</b>
+										</CaptionSharp>
+										<CaptionSharp>Test</CaptionSharp>
+										<StyledBadge variant="success">Mentor</StyledBadge>
+									</Card.Body>
+								</ProfileCard>
+							</>
+						))}
 				</StyledSlider>
+				<CaptionSharp>Geser untuk melihat jawaban lainnya</CaptionSharp>
 			</Modal.Body>
-			<Modal.Footer>
-				<Button variant={"success"} onClick={props.onHide}>
-					Tutup
-				</Button>
-			</Modal.Footer>
+			<Modal.Footer style={{ minHeight: "65px" }}></Modal.Footer>
 		</Modal>
 	);
 };
@@ -280,7 +294,7 @@ const MenteeView = ({ currentUser, signOut }) => {
 	}, []);
 
 	useEffect(() => {
-		setAnsQ(questions.filter((q) => q.answers && q.answers.length > 0)); // sorting newest to oldest question
+		setAnsQ(questions.filter((q) => q.answers && q.answers.length > 0));
 	}, [questions]);
 
 	return (
