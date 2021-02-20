@@ -21,6 +21,8 @@ import styled from "styled-components";
 import AuthContext from "../../context/auth/authContext";
 import mapel from "../mapeldict";
 import { timeDifference } from "../../utils/timeDifference";
+import Slider from "react-slick";
+
 const StyledHeadingMD = styled(HeadingMD)`
 	font-size: 16px;
 `;
@@ -96,6 +98,26 @@ const StyledTabs = styled(Tabs)`
 	padding: 16px;
 	margin-bottom: 24px;
 `;
+const StyledSlider = styled(Slider)`
+	.slick-prev,
+	.slick-next {
+		display: none !important;
+	}
+	.slick-dots {
+		bottom: -60px;
+		li {
+			margin: 0;
+		}
+		li button:before {
+			font-size: 10px;
+			opacity: 1;
+			color: #b7dccb;
+		}
+		li.slick-active button:before {
+			color: #41d692;
+		}
+	}
+`;
 const LoginView = () => {
 	const authContext = useContext(AuthContext);
 
@@ -154,14 +176,33 @@ const LoginView = () => {
 const AnswerModal = (props) => {
 	const { show, onHide } = props;
 
+	const settings = {
+		dots: true,
+		infinite: true,
+		speed: 500,
+		slidesToShow: 1,
+		slidesToScroll: 1,
+	};
+
 	return (
 		<Modal {...props} size="lg" centered>
 			<Modal.Header closeButton>
-				<Modal.Title>Modal heading</Modal.Title>
+				<Modal.Title>Jawaban </Modal.Title>
 			</Modal.Header>
-			<Modal.Body>asd</Modal.Body>
+			<Modal.Body>
+				<StyledSlider {...settings}>
+					<div>
+						<Card>asd asdfasd asd sadas das dsadas </Card>
+					</div>
+					<div>
+						<h3>2</h3>
+					</div>
+				</StyledSlider>
+			</Modal.Body>
 			<Modal.Footer>
-				<Button onClick={props.onHide}>Close</Button>
+				<Button variant={"success"} onClick={props.onHide}>
+					Tutup
+				</Button>
 			</Modal.Footer>
 		</Modal>
 	);
