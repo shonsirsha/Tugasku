@@ -38,10 +38,20 @@ const StyledRow = styled(Row)`
 `;
 const StyledFormControl = styled(FormControl)`
 	border: none;
-	border-bottom: 1.8px solid #00ab6b;
+	border-bottom: 2px solid #00ab6b;
 	border-radius: 0;
 	margin-bottom: 16px;
 	padding: 4px;
+	&:focus {
+		border-color: #00ab6b;
+		box-shadow: none;
+	}
+	&:-webkit-autofill,
+	&:-webkit-autofill:hover,
+	&:-webkit-autofill:focus,
+	&:-webkit-autofill:active {
+		-webkit-box-shadow: 0 0 0 30px white inset !important;
+	}
 `;
 const ProfileCard = styled(Card)`
 	padding: 4px;
@@ -175,6 +185,7 @@ const LoginView = () => {
 						<StyledFormControl
 							type="password"
 							placeholder="Password"
+							className="shadow-none"
 							name="password"
 							onChange={handleChange}
 						/>
