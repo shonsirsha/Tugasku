@@ -138,6 +138,8 @@ const StyledSlider = styled(Slider)`
 		}
 	}
 `;
+
+const StyledLogOnButton = styled(Button)``;
 const LoginView = () => {
 	const authContext = useContext(AuthContext);
 
@@ -193,9 +195,13 @@ const LoginView = () => {
 							Password harus lebih dari 5 karakter
 						</Form.Text>
 
-						<Button variant="success" type="submit">
+						<StyledLogOnButton
+							variant="outline-success"
+							type="submit"
+							style={{ borderRadius: "24px" }}
+						>
 							{authLoading ? "Loading.." : "Lanjutkan"}
-						</Button>
+						</StyledLogOnButton>
 					</Form>
 				</Col>
 			</Row>
