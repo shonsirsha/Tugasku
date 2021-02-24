@@ -24,7 +24,7 @@ import { timeDifference } from "../../utils/timeDifference";
 import { hasBeenAnsweredByMe } from "../../utils/hasBeenAnsweredByMe";
 
 import Slider from "react-slick";
-
+import logo from "../../images/logo.png";
 const StyledHeadingMD = styled(HeadingMD)`
 	font-size: 16px;
 `;
@@ -157,7 +157,17 @@ const LoginView = () => {
 	return (
 		<>
 			<Row>
-				<Col>
+				<Col style={{ display: "flex", flexDirection: "column" }}>
+					<img
+						src={logo}
+						style={{
+							marginTop: "-32px",
+							height: "290px",
+							marginLeft: "auto",
+							marginRight: "auto",
+							marginBottom: "24px",
+						}}
+					/>
 					<StyledHeadingMD>Daftar / Masuk</StyledHeadingMD>
 				</Col>
 			</Row>
@@ -484,7 +494,7 @@ const MenteeView = ({ currentUser, signOut }) => {
 									setModalType("question");
 									setShowNewQModal(true);
 								}}
-								style={{ width: "100%" }}
+								style={{ width: "100%", borderRadius: "20px" }}
 							>
 								📝 &nbsp; Buat Tugas Baru
 							</Button>
